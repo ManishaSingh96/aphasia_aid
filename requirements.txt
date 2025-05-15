@@ -1,0 +1,7 @@
+openai==1.76.2
+python-dotenv==1.0.0
+sounddevice
+fastapi==0.109.2
+uvicorn==0.27.1
+python-multipart==0.0.9
+pydantic==2.6.1
