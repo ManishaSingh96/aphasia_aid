@@ -1,0 +1,34 @@
+{
+    "session_no": 1,
+    "language": "Hindi",
+    "focus_areas": ["naming", "comprehension", "understanding"],
+    "difficulty_plan": {
+      "naming": "easy",
+      "comprehension": "easy",
+      "understanding": "easy"
+    },
+    "domains": ["fruits", "kitchen", "animals"],
+    "word_rules": "Use only 1-2 syllable words. Avoid abstract nouns.",
+    "pronunciation_focus": true,
+    "exercise_mix": {
+      "naming": 3,
+      "comprehension": 2,
+      "understanding": 2
+    },
+    "session_goals": [
+      "Familiarize the patient with the session structure",
+      "Test patient's response to basic naming tasks",
+      "Check comprehension using simple everyday choices",
+      "Assess understanding through simple object-function questions",
+      "Reinforce correct pronunciation gently after each response"
+    ],
+    "therapist_guidance": [
+      "Speak in Hindi and use child-friendly language",
+      "Keep the tone kind and supportive",
+      "Start with familiar items from patient's daily life",
+      "Offer hints or syllable breakdowns if the patient struggles",
+      "Positively reinforce all attempts, even if incorrect",
+      "Repeat correct answers and ask patient to repeat slowly"
+    ]
+  }
+  

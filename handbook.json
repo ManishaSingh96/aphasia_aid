@@ -1,0 +1,125 @@
+{
+    "exercise_types": {
+      "naming": {
+        "description": "Patient names the object shown or described.",
+        "question_templates": [
+          "What is this?",
+          "Can you name this object?",
+          "Tell me what this is called."
+        ]
+      },
+      "comprehension": {
+        "description": "Patient answers to demonstrate understanding.",
+        "question_templates": [
+          "Which one do you use to cut: a spoon or a knife?",
+          "What do you wear on your feet?",
+          "Which one makes a sound: a bell or a spoon?"
+        ]
+      },
+      "understanding": {
+        "description": "Patient explains purpose, function, or associations.",
+        "question_templates": [
+          "How do you use this?",
+          "Where can you find this?",
+          "What do you do with this object?"
+        ]
+      }
+    },
+    "difficulty_levels": {
+      "easy": {
+        "rules": [
+          "Use 1-2 syllable words",
+          "Familiar and concrete objects only",
+          "Short, direct prompts"
+        ],
+        "domains": ["fruits", "kitchen", "animals"],
+        "sample_questions": [
+          {
+            "type": "naming",
+            "domain": "fruits",
+            "question": "This is yellow and monkeys love it. What is it?",
+            "answer": "Banana"
+          },
+          {
+            "type": "comprehension",
+            "domain": "kitchen",
+            "question": "Which one can you eat: apple or cup?",
+            "answer": "Apple"
+          },
+          {
+            "type": "understanding",
+            "domain": "animals",
+            "question": "What sound does a dog make?",
+            "answer": "Bark"
+          }
+        ]
+      },
+      "medium": {
+        "rules": [
+          "Use 2-3 syllable words",
+          "Include basic function-based prompts",
+          "Some reasoning allowed"
+        ],
+        "domains": ["school items", "clothing", "vehicles"],
+        "sample_questions": [
+          {
+            "type": "naming",
+            "domain": "clothing",
+            "question": "What do you wear on your head when it's cold?",
+            "answer": "Cap"
+          },
+          {
+            "type": "comprehension",
+            "domain": "school items",
+            "question": "Which one is used to write: pencil or eraser?",
+            "answer": "Pencil"
+          },
+          {
+            "type": "understanding",
+            "domain": "vehicles",
+            "question": "Where do you see a bus?",
+            "answer": "On the road"
+          }
+        ]
+      },
+      "hard": {
+        "rules": [
+          "Include 3+ syllable words",
+          "Ask abstract or associative questions",
+          "Minimal cues provided"
+        ],
+        "domains": ["occupations", "tools", "emotions"],
+        "sample_questions": [
+          {
+            "type": "naming",
+            "domain": "occupations",
+            "question": "Who teaches children in school?",
+            "answer": "Teacher"
+          },
+          {
+            "type": "comprehension",
+            "domain": "tools",
+            "question": "Which one is used for cutting: hammer or scissors?",
+            "answer": "Scissors"
+          },
+          {
+            "type": "understanding",
+            "domain": "emotions",
+            "question": "How do you feel when you lose your toy?",
+            "answer": "Sad"
+          }
+        ]
+      }
+    },
+    "language_support": {
+      "Hindi": {
+        "notes": "Include culturally familiar words like roti, metro, auto, etc.",
+        "pronunciation_support": true
+      },
+      "English": {
+        "notes": "Use clear, simple words with phonetic reinforcement.",
+        "pronunciation_support": true
+      }
+    }
+  }
+  

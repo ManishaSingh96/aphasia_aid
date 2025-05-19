@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 import time
 import json 
-from prompt import prompt
+from prompt import therapist_prompt,prompt,patient_info
 
 
 load_dotenv()
@@ -11,7 +11,8 @@ load_dotenv()
 class generate_assistant:
     def __init__(self,model,assistant_name="Speech Therapist Assistant"):
         self.model=model
-        self.prompt=prompt
+        self.prompt=therapist_prompt
+        self.patient_info=patient_info
         self.assistant_name=assistant_name
 
     def _create_speech_assistant_(self):
