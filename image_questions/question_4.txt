@@ -1,0 +1,4 @@
+Category: Action Naming
+Question: [Image of someone sweeping the floor] "What is the person doing?"
+Image prompt: A person using a broom to sweep the floor in a house
+Image URL: https://oaidalleapiprodscus.blob.core.windows.net/private/org-ssKKjlb0VNuOWJ15P0CC5FCi/user-Fq7Un3fGcs9nX8KCbnhEh0mb/img-N3Fsnocd8XjiYw5CypyGdbe1.png?st=2025-05-29T19%3A13%3A59Z&se=2025-05-29T21%3A13%3A59Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-29T06%3A57%3A32Z&ske=2025-05-30T06%3A57%3A32Z&sks=b&skv=2024-08-04&sig=BMAb964szgTQVxm2kGnBWng9yzovNU9AuEOMGH6acSw%3D
