@@ -1,4 +1,0 @@
-Category: Image-Based Naming
-Question: What is this person doing?
-Image prompt: A person cooking chapatis on a traditional Indian gas stove.
-Image URL: https://oaidalleapiprodscus.blob.core.windows.net/private/org-ssKKjlb0VNuOWJ15P0CC5FCi/user-Fq7Un3fGcs9nX8KCbnhEh0mb/img-Bsm3Y5UwsmFZcYX0mmZNnhOw.png?st=2025-05-29T19%3A13%3A47Z&se=2025-05-29T21%3A13%3A47Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-29T11%3A12%3A20Z&ske=2025-05-30T11%3A12%3A20Z&sks=b&skv=2024-08-04&sig=WWpwKtg%2BjbouwkZszNiBxgk4zjpyKKaNvOcc3P5qpqQ%3D

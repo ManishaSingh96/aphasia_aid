@@ -1,4 +1,0 @@
-Category: Image-Based Naming
-Question: What is this person doing?
-Image prompt: A person using a hairdryer to dry their hair.
-Image URL: https://oaidalleapiprodscus.blob.core.windows.net/private/org-ssKKjlb0VNuOWJ15P0CC5FCi/user-Fq7Un3fGcs9nX8KCbnhEh0mb/img-r0MVNEiPGxhAMIDHw2pMdlCD.png?st=2025-05-29T19%3A14%3A10Z&se=2025-05-29T21%3A14%3A10Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-29T10%3A10%3A36Z&ske=2025-05-30T10%3A10%3A36Z&sks=b&skv=2024-08-04&sig=zctazwiMBnRX9aeGFbNmB%2BXUZRwHlajhtoSsDHHku7s%3D

@@ -6,7 +6,18 @@ import sys
 
 gs = generate_therapist(model="gpt-4o")
 stt=speech_to_text()
-LOG_FILE="session_log.txt"
+
+
+def get_patient_info():
+    with open("info.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+    
+patient_info = get_patient_info()
+patient_name=patient_info['patient_name']
+patient_city=patient_info['city']
+patient_profession=patient_info['profession']
+
+LOG_FILE=f"session_{patient_name}_{patient_city}_{patient_profession}txt"
 def log_interaction(question, user_response):
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(f"Q: {question.strip()}\n")
@@ -14,6 +25,7 @@ def log_interaction(question, user_response):
 
 def display_question_answer(prompt):
     print("\n🗣️ Assistant:", prompt)
+    gs.call_tts(prompt)
     user_msg = input("\n👤 You (press Enter to speak): ")
 
     if user_msg.strip() == "":
@@ -48,37 +60,42 @@ def main():
     exercise_sets = gs.call_question_generation_agent()
 
     for set in exercise_sets:
-        print("\n🟢 Set ID:", set.get("set_id"))
+        print("\nSet ID:", set.get("set_id"))
         object_name = set.get("object")
-        image_url = gs.call_image_generator_agent(object_name)
+        # image_url = gs.call_image_generator_agent(object_name)
 
         for step in set["steps"]:
             question = step.get("question")
             user_msg = display_question_answer(question)
             eval = gs.call_evaluator_agent(object_name, user_msg, step)
             eval = clean_and_parse_json(eval)
-            print("📝 Evaluation:", eval['assessment'])
-
-            if eval['assessment'] == 'Correct':
+            
+            if user_msg.strip()=='skip':
+                continue
+            elif eval['assessment'] == 'Correct':
+                print("📝 Evaluation:", eval['assessment'])
                 continue
 
             user_msg = display_question_answer(f"💡 {eval['feedback_hint']}")
             eval = gs.call_evaluator_agent(object_name, user_msg, step)
             eval = clean_and_parse_json(eval)
-            print("📝 Evaluation:", eval['assessment'])
-
-            if eval['assessment'] == 'Correct':
+          
+            if user_msg.strip()=='skip':
+                continue
+            elif eval['assessment'] == 'Correct':
+                print("📝 Evaluation:", eval['assessment'])
                 continue
 
-            user_msg = display_question_answer(f"💡 {eval['feedback_hint']}")
-            eval = gs.call_evaluator_agent(object_name, user_msg, step)
-            eval = clean_and_parse_json(eval)
-            print("📝 Evaluation:", eval['assessment'])
+            # user_msg = display_question_answer(f"💡 {eval['feedback_hint']}")
+            # eval = gs.call_evaluator_agent(object_name, user_msg, step)
+            # eval = clean_and_parse_json(eval)
+            # print("📝 Evaluation:", eval['assessment'])
 
-            if eval['assessment'] == 'Correct':
-                continue
+            # if eval['assessment'] == 'Correct':
+            #     continue
 
-            print(f"🖼️ चलिए, यह तस्वीर देखें: {image_url}")
+
+            # print(f"🖼️ चलिए, यह तस्वीर देखें: {image_url}")
             print("👉 अगले सवाल की ओर बढ़ते हैं...\n")
 
 if __name__ == "__main__":

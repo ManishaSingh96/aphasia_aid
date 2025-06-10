@@ -1,4 +1,0 @@
-Category: Function Matching
-Question: What do you use to light a candle? Matchstick or book?
-Image prompt: A matchstick and a book next to a lit candle.
-Image URL: https://oaidalleapiprodscus.blob.core.windows.net/private/org-ssKKjlb0VNuOWJ15P0CC5FCi/user-Fq7Un3fGcs9nX8KCbnhEh0mb/img-5NhHNaj5Xa6tdtmN292NKukB.png?st=2025-05-29T19%3A13%3A23Z&se=2025-05-29T21%3A13%3A23Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-29T09%3A54%3A18Z&ske=2025-05-30T09%3A54%3A18Z&sks=b&skv=2024-08-04&sig=QAkDSkqrW1qdj%2BJiKyAlt9d9O5Nam/3RwKNKEFdIMhw%3D
