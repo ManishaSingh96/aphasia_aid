@@ -1,0 +1,80 @@
+image_repo := "some_repository"
+image_name := "backend"
+image_id := "latest"
+platform := if `nix eval --impure --raw --expr 'builtins.currentSystem'` == "x86_64-linux" { "amd64" } else { "arm64" }
+image_tag := image_id + "_" + platform
+image_file := image_name + "_" + image_tag
+
+default:
+	@just --list
+
+test:
+	python -m pytest -v -s "$@"
+
+# Run the linter to check for issues
+_check-lint:
+    @echo "Linting with Ruff..."
+    @ruff check .
+	@pyright
+
+# Run the static type checker
+_check-type:
+    @echo "Type checking with Mypy..."
+    @mypy .
+
+# Run the security scanner
+_check-security:
+    @echo "Scanning for security issues with Bandit..."
+    @bandit -r src
+
+# run code checks
+check: _check-lint _check-type _check-security
+
+# Apply formatting in-place
+_fix-format:
+    @echo "Formatting with Black..."
+    @black .
+
+# Let the linter try to automatically fix issues
+_fix-lint:
+    @echo "Fixing lint issues with Ruff..."
+    @ruff check --fix .
+
+# Let the linter try to automatically fix issues (forced)
+_fix-lint-force:
+    @echo "Fixing lint issues with Ruff..."
+    @ruff check --fix --unsafe-fixes .
+
+# fix everything that can be fixed automatically
+fix: _fix-lint _fix-format
+fix-force: _fix-lint-force _fix-format
+
+# run the worker
+backend-server:
+  uv run server
+
+docker-build:
+	IMAGE_NAME={{image_repo}}/{{image_name}} \
+	IMAGE_TAG={{image_tag}} \
+	nix build -o ./results/{{image_file}} \
+	--impure --show-trace .#backend_docker
+
+docker-load:
+	docker load < ./results/{{image_file}}
+
+docker-run:
+	docker run --rm \
+	-it {{image_repo}}/{{image_name}}:{{image_tag}}
+
+docker-push:
+	docker push {{ image_repo }}/{{image_name}}:{{image_tag}}
+
+docker-manifest-push:
+	docker pull "{{ image_repo }}/{{image_name}}:{{image_id}}_amd64"
+	docker pull "{{ image_repo }}/{{image_name}}:{{image_id}}_arm64"
+
+	docker manifest create "{{ image_repo }}/{{ image_name }}:{{ image_id }}" \
+	--amend "{{ image_repo }}/{{ image_name }}:{{ image_id }}_amd64" \
+	--amend "{{ image_repo }}/{{ image_name }}:{{ image_id }}_arm64"
+
+	docker manifest push "{{ image_repo }}/{{ image_name }}:{{ image_id }}"

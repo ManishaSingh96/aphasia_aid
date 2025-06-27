@@ -1,0 +1,9 @@
+source_up
+export PROJECT_ROOT=$PWD
+export PROJECT_DATA_DIR=$PWD/.data
+
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONBREAKPOINT="pudb.set_trace"
+
+export NIXPKGS_ALLOW_UNFREE=1
+use flake . --impure

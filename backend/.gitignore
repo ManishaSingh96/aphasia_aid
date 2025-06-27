@@ -1,0 +1,82 @@
+.data
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.pipenv/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# mypy / pylint / bandit / other reports
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+.bandit
+
+# Pytest
+.pytest_cache/
+
+# PyCharm / VS Code / other IDEs
+.idea/
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Editable installs
+*.egg
+
+# Wheels
+*.whl
+
+# Sphinx docs
+docs/_build/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Logs
+*.log
+
+# Local.env / secrets
+.env
+.env.*
+
+# If using `src/` layout
+src/**/__pycache__/
+src/**/*.py[cod]
