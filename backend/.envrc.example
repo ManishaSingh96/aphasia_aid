@@ -10,10 +10,10 @@ export PGHOST=
 export PGPORT=
 export PGUSER=
 export PGDATABASE=
-export PGPASSWORD=
+export PGPASSWORD=supabase_pass
 
 # pg db string
-export SIA_DB_CONNECTION_STRING=
+export SIA_DB_CONNECTION_STRING=supabase_db_url
 export TEST_SUPER_USER_DATABASE_CONNECTION_STRING=postgresql://postgres@localhost:7777/postgres
 export TEST_TEMPLATE_DB=sia_test_db
 
