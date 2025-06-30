@@ -14,12 +14,14 @@ export PGPASSWORD=
 
 # pg db string
 export SIA_DB_CONNECTION_STRING=
-export TEST_SUPER_USER_DATABASE_CONNECTION_STRING=
+export TEST_SUPER_USER_DATABASE_CONNECTION_STRING=postgresql://postgres@localhost:7777/postgres
+export TEST_TEMPLATE_DB=sia_test_db
 
 # migrations
 # NOTE: for migrations use session pooling/direct connection
 export GOOSE_DRIVER=postgres
 export GOOSE_DBSTRING=postgresql://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/$PGDATABASE
+#export GOOSE_DBSTRING=postgresql://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/sia_db_test
 
 export NIXPKGS_ALLOW_UNFREE=1
 use flake . --impure

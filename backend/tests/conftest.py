@@ -1,11 +1,13 @@
 from typing import AsyncGenerator
 
 import pytest
+from psycopg.rows import class_row
 from test_helpers.realmock_db import create_test_db_async
 from test_helpers.test_queries_model import TestQueries
 
 from sia.db.connection import DatabaseClient
 from sia.db.queries.activity_queries import ActivityQueries
+from sia.schemas.db.user import User, UserCreate
 
 # tests/
 # ├── conftest.py               # db_session, http_client — global fixtures
@@ -49,3 +51,24 @@ async def test_db_client_w_test_db() -> AsyncGenerator[
     yield client, queries
     await client.close()
     await destroy_db()
+
+
+@pytest.fixture
+async def create_user(
+    test_db_client_w_test_db: tuple[DatabaseClient, TestQueries],
+) -> User:
+    """Helper to create a user in the test database."""
+    db_client, _ = test_db_client_w_test_db
+    user_data = UserCreate(email="someemail@abc.com")
+    # datetime.now(timezone.utc)
+    async with db_client.pool.connection() as conn:
+        # async with conn.cursor() as cur:
+        async with conn.cursor(row_factory=class_row(User)) as cur:
+            await cur.execute(
+                "INSERT INTO auth.users (email) VALUES (%s) RETURNING *",
+                (user_data.email,),
+            )
+            user_record = await cur.fetchone()
+            if not user_record:
+                raise Exception("user creation")
+    return user_record

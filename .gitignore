@@ -32,3 +32,4 @@ env/
 # Cache
 *.cache
 *.pytest_cache/
+.data

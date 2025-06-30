@@ -1,18 +1,18 @@
-from enum import StrEnum, auto
+from enum import Enum
 
 
-class ActivityStatus(StrEnum):
-    IDLE = auto()
-    ONGOING = auto()
-    COMPLETED = auto()
+class ActivityStatus(str, Enum):
+    IDLE = "IDLE"
+    ONGOING = "ONGOING"
+    COMPLETED = "COMPLETED"
 
 
-class ActivityItemStatus(StrEnum):
-    NOT_TERMINATED = auto()
-    RETRIES_EXHAUST = auto()
-    SKIP = auto()
-    SUCCESS = auto()
+class ActivityItemStatus(str, Enum):
+    NOT_TERMINATED = "NOT_TERMINATED"
+    RETRIES_EXHAUST = "RETRIES_EXHAUST"
+    SKIP = "SKIP"
+    SUCCESS = "SUCCESS"
 
 
-class ActivityItemType(StrEnum):
-    FREE_TEXT = auto()
+class ActivityItemType(str, Enum):
+    FREE_TEXT = "FREE_TEXT"

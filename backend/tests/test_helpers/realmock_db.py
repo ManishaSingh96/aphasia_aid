@@ -51,6 +51,9 @@ logger = get_logger(__name__)
 # DATABASE from the UI. But you can just use pgcli or direct postgres to create
 # the database. After creating, just push your migrations to it and this should
 # work as expected.
+# NOTE: Another supabase problem
+# Supabase is accessed behind an pooler, hence you cannot remove all connections
+# so it'll not allow you to use it in the first place
 async def create_test_db_async() -> Tuple[str, Callable[[], Awaitable[None]]]:
     """
     Create a temporary test database from a template.

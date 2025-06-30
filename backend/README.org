@@ -1,0 +1,21 @@
+* sia
+** Database setup
+We're using supabase postgres and sort of reliant on its auth database setup. So if we're testing we'd want to replicate some of it.
+*** Test DB Setup
+#+begin_src sql
+CREATE DATABASE sia_test_db WITH OWNER postgres;
+
+\c sia_test_db
+
+CREATE SCHEMA auth AUTHORIZATION postgres;
+
+-- NOTE: This is a very trimmed down version
+-- N
+CREATE TABLE auth.users (
+    instance_id uuid,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email TEXT
+);
+
+-- Now we've minimally replicated supabase postgres in our local system, so we're good for running tests. At this point we can run our application migration scripts as per our need.
+#+end_src

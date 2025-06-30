@@ -1,0 +1,14 @@
+source_up
+export PROJECT_ROOT=$PWD
+export PROJECT_DATA_DIR=$PWD/.data
+
+# pg env vars
+export PGDATA=$PROJECT_DATA_DIR/postgres_data
+export PGHOST=localhost
+export PGPORT=7777
+export PGUSER=postgres
+export PGDATABASE=postgres
+export PGPASSWORD=420
+
+export NIXPKGS_ALLOW_UNFREE=1
+use flake . --impure
