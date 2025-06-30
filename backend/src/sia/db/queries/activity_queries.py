@@ -28,6 +28,13 @@ class ActivityQueries(BaseQueries):
         "SELECT * FROM activity_item WHERE activity_id = %s ORDER BY created_at ASC"
     )
     GET_ACTIVITY_ANSWERS_FOR_ACTIVITY_ITEM_SQL = "SELECT * FROM activity_answer WHERE activity_item_id = %s ORDER BY attempted_at ASC"
+    GET_NEXT_NON_TERMINATED_ACTIVITY_ITEM_SQL = """
+        SELECT * FROM activity_item
+        WHERE activity_id = %s
+        AND status = 'NOT_TERMINATED'
+        ORDER BY (question_config->>'order')::int ASC
+        LIMIT 1;
+    """
 
     async def get_activity_by_id(self, activity_id: uuid.UUID) -> Optional[Activity]:
         """Retrieve an activity by its ID."""
@@ -95,3 +102,20 @@ class ActivityQueries(BaseQueries):
                     all_activity_answers.extend(answers_for_item)
 
         return activity, activity_items, all_activity_answers
+
+    async def get_next_non_terminated_activity_item(
+        self,
+        activity_id: uuid.UUID,
+    ) -> Optional[ActivityItem]:
+        """
+        Retrieves the next non-terminated activity item for a given activity,
+        ordered by 'order' within its question_config JSONB.
+        """
+        async with self.db_client.pool.connection() as conn:
+            async with conn.cursor(row_factory=class_row(ActivityItem)) as cur:
+                await cur.execute(
+                    self.GET_NEXT_NON_TERMINATED_ACTIVITY_ITEM_SQL,
+                    (activity_id,),
+                )
+                result = await cur.fetchone()
+                return result

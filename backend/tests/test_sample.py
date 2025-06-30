@@ -28,6 +28,7 @@ async def test_create_activity(
 
     # 2. Prepare activity item parameters
     question_config = FreeTextQuestionConfig(
+        order=0,
         activity_type="FREE_TEXT",
         prompt="What is the capital of France?",
     )
@@ -51,6 +52,7 @@ async def test_create_activity(
             status=ActivityItemStatus.NOT_TERMINATED,
             activity_type=ActivityItemType.FREE_TEXT,
             question_config=FreeTextQuestionConfig(
+                order=1,
                 activity_type="FREE_TEXT",
                 prompt="What is 2+2?",
             ),

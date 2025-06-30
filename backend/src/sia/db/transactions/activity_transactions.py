@@ -1,11 +1,15 @@
-from typing import List
+import uuid
+from typing import List, Optional
 
-from psycopg import AsyncConnection
+from psycopg import AsyncConnection, sql
 from psycopg.rows import class_row
+from psycopg.types.json import Jsonb
 from pydantic import BaseModel
 
 from sia.schemas.db.activity import Activity, ActivityCreate
+from sia.schemas.db.activity_answer import ActivityAnswer, ActivityAnswerCreate
 from sia.schemas.db.activity_item import ActivityItem, ActivityItemCreate
+from sia.schemas.db.enums import ActivityItemStatus, ActivityStatus
 from sia.telemetry.log import get_logger
 
 logger = get_logger(__name__)
@@ -62,9 +66,90 @@ async def create_activity(
                     item_params.max_retries,
                     item_params.status.value,
                     item_params.activity_type.value,
-                    item_params.question_config.model_dump_json(),
-                    item_params.question_evaluation_config.model_dump_json(),
+                    Jsonb(item_params.question_config.model_dump(mode="json")),
+                    Jsonb(
+                        item_params.question_evaluation_config.model_dump(mode="json"),
+                    ),
                 ),
             )
 
     return activity_result
+
+
+async def update_activity_status(
+    conn: AsyncConnection,
+    activity_id: uuid.UUID,
+    new_status: ActivityStatus,
+) -> None:
+    """Updates the status of a given activity."""
+    update_sql = """
+        UPDATE activity
+        SET status = %s
+        WHERE id = %s;
+    """
+    async with conn.cursor() as cur:
+        await cur.execute(update_sql, (new_status.value, activity_id))
+
+
+async def update_activity_item_attempts_and_status(
+    conn: AsyncConnection,
+    activity_item_id: uuid.UUID,
+    increment_attempts: bool = False,
+    new_status: Optional[ActivityItemStatus] = None,
+) -> None:
+    """
+    Updates 'attempted_tries' and optionally the 'status' of an activity item.
+    Handles setting status to RETRIES_EXHAUST, SKIP, or SUCCESS.
+    """
+    update_clauses = []
+    params = []
+
+    if increment_attempts:
+        update_clauses.append(sql.SQL("attempted_retries = attempted_retries + 1"))
+
+    if new_status is not None:
+        update_clauses.append(sql.SQL("status = %s"))
+        params.append(new_status.value)
+
+    if not update_clauses:
+        logger.warning("No updates specified for activity item %s", activity_item_id)
+        return
+
+    set_clause = sql.SQL(", ").join(update_clauses)
+
+    update_sql = sql.SQL("UPDATE activity_item SET {} WHERE id = %s;").format(
+        set_clause,
+    )
+    params.append(activity_item_id)
+
+    async with conn.cursor() as cur:
+        await cur.execute(update_sql, tuple(params))
+
+
+async def create_activity_answer(
+    conn: AsyncConnection,
+    answer_params: ActivityAnswerCreate,
+) -> ActivityAnswer:
+    """Inserts a new activity answer record."""
+    create_sql = """
+        INSERT INTO activity_answer (
+            activity_item_id,
+            answer,
+            is_correct
+        )
+        VALUES (%s, %s, %s)
+        RETURNING id, activity_item_id, answer, is_correct, attempted_at;
+    """
+    async with conn.cursor(row_factory=class_row(ActivityAnswer)) as cur:
+        await cur.execute(
+            create_sql,
+            (
+                answer_params.activity_item_id,
+                Jsonb(answer_params.answer.model_dump(mode="json")),
+                answer_params.is_correct,
+            ),
+        )
+        result = await cur.fetchone()
+        if not result:
+            raise Exception("Failed to create activity answer")
+        return result

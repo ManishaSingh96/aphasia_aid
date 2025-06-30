@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 
 class BaseQuestionConfig(BaseModel):
+    order: int = 0
     pass
 
 
@@ -12,7 +13,7 @@ class BaseQuestionEvaluationConfig(BaseModel):
 
 
 class BaseAnswer(BaseModel):
-    pass
+    skip: bool = False
 
 
 # -- Activity Type: FREE_TEXT

@@ -19,3 +19,33 @@ CREATE TABLE auth.users (
 
 -- Now we've minimally replicated supabase postgres in our local system, so we're good for running tests. At this point we can run our application migration scripts as per our need.
 #+end_src
+** API ENdpoints
+read backend/src/sia/db/queries/activity_queries.py and backend/src/sia/db/transactions/activity_transactions.py
+
+and tell me if we have all the lower level methods to implement the following
+
+- ~GET /activities~ : list all activities for the user (no pagination needed now)
+- ~GET /activities/<id>/details~ : Gets info about individual activity, we can do a join to get activity items related to this activity
+- ~GET /activities/<activity_id>/items/<activity_item_id>~ : Gets an activity item
+- ~POST /activities/create~: this will call a remote endpoint to generate the activity based on ~CreateActivityParams~) then will generate the (activity+activity_items), so this should happen in a transaction. This should just return the created activity.
+- (needs to be done in a transaction) ~POST /activities/<id>/start~: This will essentially set status to ongoing, returns a related activitytype which has promptconfig.order of lowest. We can either use JSONB functions for this else get all the activities and sort in application code.
+  - But This has few subfunctions and prechecks
+    - First check that if it's complete already if that's the case return with the message
+    - We need to check if there are any valid activity items to return, loop though all activity items for anything that is in NON terminated state.
+    - If yes, we want to set that back (but odereded like we mentioned previously), just the first in the order.
+- (needs to done in a transaction) ~POST /activities/<id>/items/<activity_item_id>/answer~ : This creates a activityanswer thiing, it'll take the required params. (eg. ~FreeTextAnswer~ etc based on the activity_type)
+  - This has to check 2 things, check the state of the activity_item, also at each asnwer it needs to check if all the items in the acitivity has reached terminal state(see the activity_item_status), in that case we want to also return a boolean marked as activity_complete: True, in which case we should also update the activity itself.
+  - This has to do a couple more things
+    - First increment attempted tries
+    - When we have an answer check the max_retries to attempted retries
+    - See if the user has marked the asnswer as skip, in that case we want to update the status to SKIP
+    - We want to show next_item_id only if
+      - SKIP (and the)
+    - Return Type
+      - next_item_id: text/null
+      - hints: List[] # activity type, full list of hints from question_config (this should only be sent if)
+      - success_verdict: bool
+
+Maybe we need to create a activity handler class which would handle different types of activity_type?
+
+See schema/db/models and sql migration file
