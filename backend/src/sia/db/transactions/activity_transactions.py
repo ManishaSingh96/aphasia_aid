@@ -8,7 +8,10 @@ from pydantic import BaseModel
 
 from sia.schemas.db.activity import Activity, ActivityCreate
 from sia.schemas.db.activity_answer import ActivityAnswer, ActivityAnswerCreate
-from sia.schemas.db.activity_item import ActivityItem, ActivityItemCreate
+from sia.schemas.db.activity_item import (
+    ActivityItem,
+    ActivityItemCreateRelaxed,
+)
 from sia.schemas.db.enums import ActivityItemStatus, ActivityStatus
 from sia.telemetry.log import get_logger
 
@@ -20,7 +23,7 @@ logger = get_logger(__name__)
 # params which we're storing here.
 class CreateActivityParams(BaseModel):
     activity_create_params: ActivityCreate
-    activity_items_create_params: List[ActivityItemCreate]
+    activity_items_create_params: List[ActivityItemCreateRelaxed]
 
 
 async def create_activity(
@@ -49,12 +52,11 @@ async def create_activity(
         INSERT INTO activity_item (
             activity_id,
             max_retries,
-            status,
             activity_type,
             question_config,
             question_evaluation_config
         )
-        VALUES (%s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s)
         RETURNING *;
     """
     async with conn.cursor(row_factory=class_row(ActivityItem)) as cur:
@@ -64,7 +66,6 @@ async def create_activity(
                 (
                     activity_result.id,
                     item_params.max_retries,
-                    item_params.status.value,
                     item_params.activity_type.value,
                     Jsonb(item_params.question_config.model_dump(mode="json")),
                     Jsonb(
@@ -152,4 +153,66 @@ async def create_activity_answer(
         result = await cur.fetchone()
         if not result:
             raise Exception("Failed to create activity answer")
+        return result
+
+
+GET_NEXT_NON_TERMINATED_ACTIVITY_ITEM_SQL = """
+    SELECT * FROM activity_item
+    WHERE activity_id = %s
+    AND status = 'NOT_TERMINATED'
+    ORDER BY (question_config->>'order')::int ASC
+    LIMIT 1;
+"""
+
+GET_ACTIVITY_ITEM_BY_ID_IN_TRANSACTION_SQL = (
+    "SELECT * FROM activity_item WHERE id = %s AND activity_id = %s"
+)
+GET_ACTIVITY_ITEMS_FOR_ACTIVITY_IN_TRANSACTION_SQL = (
+    "SELECT * FROM activity_item WHERE activity_id = %s ORDER BY created_at ASC"
+)
+
+
+async def get_activity_item_in_transaction(
+    conn: AsyncConnection,
+    activity_item_id: uuid.UUID,
+    activity_id: uuid.UUID,
+) -> Optional[ActivityItem]:
+    """Retrieve an activity item by its ID and associated activity ID within a transaction."""
+    async with conn.cursor(row_factory=class_row(ActivityItem)) as cur:
+        await cur.execute(
+            GET_ACTIVITY_ITEM_BY_ID_IN_TRANSACTION_SQL,
+            (
+                activity_item_id,
+                activity_id,
+            ),
+        )
+        result = await cur.fetchone()
+        return result
+
+
+async def get_activity_items_for_activity_in_transaction(
+    conn: AsyncConnection,
+    activity_id: uuid.UUID,
+) -> List[ActivityItem]:
+    """Retrieve all activity items for a given activity ID within a transaction."""
+    async with conn.cursor(row_factory=class_row(ActivityItem)) as cur:
+        await cur.execute(
+            GET_ACTIVITY_ITEMS_FOR_ACTIVITY_IN_TRANSACTION_SQL,
+            (activity_id,),
+        )
+        results: List[ActivityItem] = await cur.fetchall()
+        return results
+
+
+async def get_next_non_terminated_activity_item(
+    conn: AsyncConnection,
+    activity_id: uuid.UUID,
+) -> Optional[ActivityItem]:
+    """
+    Retrieves the next non-terminated activity item for a given activity,
+    ordered by 'order' within its question_config JSONB.
+    """
+    async with conn.cursor(row_factory=class_row(ActivityItem)) as cur:
+        await cur.execute(GET_NEXT_NON_TERMINATED_ACTIVITY_ITEM_SQL, (activity_id,))
+        result = await cur.fetchone()
         return result

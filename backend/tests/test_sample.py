@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 from test_helpers.test_queries_model import TestQueries
 
@@ -9,12 +7,12 @@ from sia.db.transactions.activity_transactions import (
     create_activity,
 )
 from sia.schemas.db.activity import ActivityCreate
-from sia.schemas.db.activity_item import ActivityItemCreate
+from sia.schemas.db.activity_item import ActivityItemCreateRelaxed
 from sia.schemas.db.activity_types import (
     FreeTextQuestionConfig,
     FreeTextQuestionEvaluationConfig,
 )
-from sia.schemas.db.enums import ActivityItemStatus, ActivityItemType, ActivityStatus
+from sia.schemas.db.enums import ActivityItemType, ActivityStatus
 from sia.schemas.db.user import User
 
 
@@ -38,18 +36,14 @@ async def test_create_activity(
     )
 
     activity_item_create_params = [
-        ActivityItemCreate(
-            activity_id=uuid.uuid4(),  # Dummy activity_id
+        ActivityItemCreateRelaxed(
             max_retries=3,
-            status=ActivityItemStatus.NOT_TERMINATED,
             activity_type=ActivityItemType.FREE_TEXT,
             question_config=question_config,
             question_evaluation_config=question_evaluation_config,
         ),
-        ActivityItemCreate(
-            activity_id=uuid.uuid4(),  # Dummy activity_id
+        ActivityItemCreateRelaxed(
             max_retries=1,
-            status=ActivityItemStatus.NOT_TERMINATED,
             activity_type=ActivityItemType.FREE_TEXT,
             question_config=FreeTextQuestionConfig(
                 order=1,
@@ -99,7 +93,6 @@ async def test_create_activity(
         expected_item = activity_item_create_params[i]
         assert fetched_item.activity_id == created_activity.id
         assert fetched_item.max_retries == expected_item.max_retries
-        assert fetched_item.status == expected_item.status
         assert fetched_item.activity_type == expected_item.activity_type
         assert fetched_item.question_config == expected_item.question_config
         assert (

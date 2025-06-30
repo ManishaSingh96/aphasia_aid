@@ -16,6 +16,7 @@ QuestionEvaluationConfigUnion = Union[FreeTextQuestionEvaluationConfig]
 
 # base model with fields common to all Activity Items
 class ActivityItemBase(BaseModel):
+    activity_type: ActivityItemType
     activity_id: uuid.UUID
     max_retries: int = 2
     attempted_retries: int = 0
@@ -23,7 +24,6 @@ class ActivityItemBase(BaseModel):
 
 
 class ActivityItemCreate(ActivityItemBase):
-    activity_type: ActivityItemType
     question_config: QuestionConfigUnion = Field(discriminator="activity_type")
     question_evaluation_config: QuestionEvaluationConfigUnion = Field(
         discriminator="activity_type",
@@ -31,9 +31,18 @@ class ActivityItemCreate(ActivityItemBase):
 
 
 class ActivityItem(ActivityItemBase):
-    activity_type: ActivityItemType
     id: uuid.UUID
     created_at: datetime
+    question_config: QuestionConfigUnion = Field(discriminator="activity_type")
+    question_evaluation_config: QuestionEvaluationConfigUnion = Field(
+        discriminator="activity_type",
+    )
+
+
+# NOTE: This is not meant for db entires, more for application level
+class ActivityItemCreateRelaxed(BaseModel):
+    activity_type: ActivityItemType
+    max_retries: int = 2
     question_config: QuestionConfigUnion = Field(discriminator="activity_type")
     question_evaluation_config: QuestionEvaluationConfigUnion = Field(
         discriminator="activity_type",
