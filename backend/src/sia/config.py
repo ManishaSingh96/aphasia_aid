@@ -42,5 +42,15 @@ class Settings(BaseSettings):
     )
     port: int = int(os.getenv(f"{app_prefix}PORT", "8000"))
 
+    # Database settings
+    db_min_size: int = int(os.getenv(f"{app_prefix}DB_MIN_SIZE", "1"))
+    db_max_size: int = int(os.getenv(f"{app_prefix}DB_MAX_SIZE", "5"))
+    # If DB_CONNECTION_STRING is not provided, the DatabaseClient will attempt to
+    # connect using standard PostgreSQL environment variables (e.g., PGHOST, PGPORT,
+    # etc.).
+    # Alternatively, a direct connection string can be provided for external services
+    # like Supabase.
+    db_connection_string: str = os.getenv(f"{app_prefix}DB_CONNECTION_STRING", "")
+
 
 settings = Settings()

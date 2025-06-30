@@ -59,12 +59,12 @@
         in
         {
           packages = rec {
-            backend = uvpythonSet.mkVirtualEnv "env" uvworkspace.deps.default;
-            backend_docker = pkgs.dockerTools.buildLayeredImage {
+            sia = uvpythonSet.mkVirtualEnv "env" uvworkspace.deps.default;
+            sia_docker = pkgs.dockerTools.buildLayeredImage {
               name = builtins.getEnv "IMAGE_NAME";
               tag = builtins.getEnv "IMAGE_TAG";
               contents = [
-                  backend
+                  sia
                   pkgs.cacert
                   pkgs.bashInteractive
                   pkgs.coreutils
@@ -104,6 +104,9 @@
                 pyPackages.pudb
                 pyPackages.ptpython
                 # pkgs.memray
+
+                # db
+                pkgs.goose
               ];
               shellHook = ''
                  uv sync

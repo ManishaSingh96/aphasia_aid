@@ -5,5 +5,21 @@ export PROJECT_DATA_DIR=$PWD/.data
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONBREAKPOINT="pudb.set_trace"
 
+# pg env vars
+export PGHOST=
+export PGPORT=
+export PGUSER=
+export PGDATABASE=
+export PGPASSWORD=
+
+# pg db string
+export SIA_DB_CONNECTION_STRING=
+export TEST_SUPER_USER_DATABASE_CONNECTION_STRING=
+
+# migrations
+# NOTE: for migrations use session pooling/direct connection
+export GOOSE_DRIVER=postgres
+export GOOSE_DBSTRING=postgresql://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/$PGDATABASE
+
 export NIXPKGS_ALLOW_UNFREE=1
 use flake . --impure

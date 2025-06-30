@@ -1,0 +1,90 @@
+* Choosing Control Over Convenience
+This document outlines the decision to use a combination of =psycopg3=, Pydantic models, and a dedicated SQL-first migration tool(Goose) for our application's database access layer. It explains the rationale for choosing this stack over alternatives like Object-Relational Mappers (ORMs) or code generators like =sqlc= (=sqlc= is great! but [[https://github.com/sqlc-dev/sqlc-gen-python/issues][~sqlc~ python support sucks]]).
+
+Finally, it suggests a strategy for mitigating the primary challenge of this approach: ensuring synchronization between the database schema and application's data models.
+
+** The Chosen Stack / Why not an ORM?
+The database access layer is composed of three core components:
+1. *psycopg3* : The high-performance, modern PostgreSQL driver for Python. It is used for all direct database communication.
+2. *Pydantic* : Used to define our application's data models. It provides robust data validation, serialization, and clear, type-hinted data structures.
+3. *Goose* : A dedicated, SQL-first migration tool. The SQL migration files are treated as the single source of truth for the database schema.
+
+The core interaction pattern is to write raw SQL for maximum control and use =psycopg3='s built-in row factories to fetch data, which is then validated and parsed by Pydantic. It is important to note that Pydantic models must be manually written and kept in sync by inspecting the current database schema and migration files(See below for more on how to maintain the sync). This provides a clean, ergonomic, and type-safe bridge between the database and the application. Other times, whenever needed can be used ~dict_row~ and other ways to get data that ~psycopg3~ allows.
+
+*** Rationale and Justification
+This decision prioritizes direct control, performance transparency, and a schema-first design philosophy. The bridge between the database and application code is explicitly managed, rather than relying on higher-level abstractions.
+**** Why This Stack?
+- *Full Control Over SQL* : An abstraction layer does not impose limitations. This allows for finely-tuned SQL to leverage the full power of PostgreSQL, including complex joins, window functions, and native data types that are critical for application features.
+- *Performance Transparency* : There is no intermediate layer generating unpredictable or inefficient queries. The performance of our data access is directly tied to the SQL we write, making it straightforward to debug and optimize with standard tools like =EXPLAIN ANALYZE=.
+- *Clear Separation of Concerns* : The database schema (managed by Goose migrations) and the application's data representation (Pydantic models) are treated as separate, explicit contracts. This clarity avoids the ~Object-Relational Impedance Mismatch~, where object-oriented patterns can conflict with the relational nature of SQL.
+**** Alternatives Considered
+Several other popular approaches were evaluated before finalizing this decision. While these tools are powerful in their own right, the chosen stack is a better fit for the specific principles of control and transparency.
+***** Code Generation via =sqlc=
+- *The Promise* : =sqlc= generates type-safe Python code directly from raw SQL queries, which is conceptually aligned with our desire to write SQL.
+- *Our Assessment* : While =sqlc=, is great, the current state of the Python generator presented challenges for this specific use case. Certain PostgreSQL data types relied upon did not have the level of type-safe mapping required for production, which could lead to runtime errors. Given the need for deterministic type safety across the entire schema, the decision was made to wait for the tool to evolve further.
+***** Object-Relational Mappers (ORMs)
+- *The Promise* : ORMs like ~SQLAlchemy~ or ~SQLModel~ ([[https://www.reddit.com/r/Python/comments/1gtrfpf/sqlmodel_vs_sqlalchemy_for_production/][SQLAlchemy wrapper]]) excel at automating the translation between Python objects and database rows, significantly reducing boilerplate code.
+- *Our Assessment* : An ORM was opted against for two main reasons:
+  - *The Need to Bypass Abstractions* : In experience with complex applications, developers often need to drop down to raw SQL to solve difficult queries or optimize performance. In these scenarios, the ORM can become a "leaky abstraction" that adds cognitive overhead rather than reducing it.
+  - *Preference for Schema-First Design* : SQL migration files are preferred as the ultimate source of truth for the database. Many ORM workflows encourage a "code-first" approach where Python classes define the schema. By keeping schema definition in SQL, a clear and authoritative record of the database structure is maintained over time.
+*** Mitigating the Core Challenge: Schema Synchronization
+The primary risk of this chosen manual approach is the potential for the database schema and Pydantic models to drift out of sync. This is addressed with a two-pronged, automated strategy within the CI/CD pipeline.
+**** Level 1: Automated Integration Testing
+The test suite runs against a temporary PostgreSQL database that is built from migrations on every run. This process naturally catches synchronization errors:
+- Pydantic ~ValidationError~ : If a query result is missing a field or has an incorrect data type, Pydantic will raise an error during model instantiation, failing the test.
+- Database Errors : If a query references a column that a migration has removed or renamed, =psycopg3= will raise a database error, failing the test.
+
+**** Level 2: Proactive Schema Introspection
+#+begin_quote
+This is something that we'll NOT do unless absolutely necessary, and honestly if this level of sync is required, I'd opt for some other solution but that's a story for another time.
+#+end_quote
+For an even stronger guarantee, a dedicated test script will be implemented that directly compares the live database schema against Pydantic models. This script will:
+1. Connect to the test database after all migrations have been applied.
+2. Query PostgreSQL's =information_schema.columns= to fetch the column names and types for a given table.
+3. Introspect the corresponding Pydantic model's fields.
+4. Assert that the two are in sync. Any discrepancy will fail the CI pipeline, forcing the developer to resolve the mismatch.
+
+*** Conclusion
+The =psycopg3= + Pydantic stack, supported by Goose for migrations, provides an optimal balance of performance, control, and developer ergonomics. By carefully selecting tools that align with principles of transparency and schema-first design, full control over database interactions is retained. The risk of schema drift inherent in this approach is acknowledged and addressed proactively with a robust, automated testing and validation strategy, ensuring the long-term maintainability and reliability of the data access layer.
+
+** Database Interaction Patterns with =psycopg3=
+This section details the architectural patterns employed for interacting with the PostgreSQL database using =psycopg3=, focusing on robust connection management and a clear separation of concerns for query execution.
+*** Connection Pool Management: The Factory Pattern
+To ensure reliable and efficient management of database connections, a Factory Pattern is utilized for the ~DatabaseClient~. Instead of direct instantiation, the ~DatabaseClient.create()~ asynchronous class method is used to obtain a client instance. This approach offers several advantages:
+- *Ensures Proper Initialization*: The ~await pool.open()~ call within ~create()~ guarantees that the connection pool is fully initialized and ready for use before the ~DatabaseClient~ instance is returned. This prevents potential issues where the pool might be uninitialized or ~None~.
+- *Encapsulation of Setup Logic*: All the logic for setting up the connection pool (e.g., defining min/max size, handling connection strings, opening the pool) is encapsulated within the ~create()~ method. This makes the ~DatabaseClient~ constructor simpler and less prone to misuse, centralizing complex setup.
+- *Asynchronous Initialization*: It naturally supports asynchronous initialization, which is crucial for ~psycopg_pool~ and ~asyncio~ applications, ensuring non-blocking operations during client creation.
+- *Flexibility and Extensibility*: This pattern allows for easy extension of initialization logic in the future (e.g., adding more setup steps or dependency injection within the factory) without altering how ~DatabaseClient~ is consumed throughout the application.
+
+While this approach introduces a minor overhead compared to direct instantiation, it is negligible in practice for database clients and is significantly outweighed by the benefits of robustness and clear initialization. Overall, this is considered an excellent pattern for managing the ~DatabaseClient~.
+
+*** Hybrid Query Approach: Standalone Operations vs. Transactions
+Our application employs a hybrid strategy for executing database queries, balancing simplicity and efficiency for isolated operations with robust support for atomic transactions. This separation is key to maintaining clarity, data integrity, and optimal resource usage.
+**** Standalone Query Classes
+For simple, isolated database operations that do not require transactional integrity with other operations (e.g., fetching a single record by an identifier, or a single-statement write), dedicated query classes are employed. These classes (such as ~CarQueries~ as an example) are designed with the following characteristics:
+- *Simplicity for Basic Operations*: They provide a clean, self-contained interface for straightforward queries, making the code easier to understand and use for common read and single-statement write operations.
+- *Clear Responsibility*: Each method within these classes is responsible for acquiring and releasing its own connection from the ~DatabaseClient~'s connection pool. This ensures that each operation manages its connection lifecycle safely, reducing the chance of connection leaks.
+- *Dependency Injection*: The ~DatabaseClient~ is injected into the constructor of these query classes, making them testable and explicit about their dependencies.
+- *Encapsulation of Related Queries*: Grouping related queries (e.g., all car-related operations) into a single class improves code organization and discoverability.
+
+A consideration for this approach is that acquiring and releasing a connection for every standalone query can introduce slight overhead if many such queries are executed in rapid succession, though connection pooling significantly mitigates this. By design, these methods are not intended for multi-statement transactions.
+
+**** Connection-Based Functions for Transactions
+For operations requiring transactional integrity—where multiple database statements must succeed or fail as a single atomic unit—a different approach is taken. Functions designed for transactions accept an explicit ~connection~ object as a parameter. This pattern offers significant advantages:
+- *True Transactional Integrity*: It ensures that a group of operations either all succeed or all fail, maintaining data consistency across complex business logic.
+- *Composability*: These functions can be easily combined within an ~async with conn.transaction():~ block, allowing for the atomic execution of complex sequences of database operations.
+- *Explicit Connection Management*: By passing the ~connection~, it is explicitly clear that these functions are part of a larger unit of work managed by the caller, promoting transparency in transaction scope.
+
+The primary consideration here is that the caller is responsible for acquiring the connection and managing the transaction block, which adds a bit more boilerplate to the calling code compared to standalone query methods.
+
+**** Rationale for Separation
+This hybrid approach is considered a good practice because:
+- *Clear Intent*: It clearly distinguishes between operations that need transactional integrity and those that do not, improving code readability and reducing the likelihood of accidental non-transactional operations where atomicity is critical.
+- *Optimized Resource Usage*: It allows for efficient execution of simple queries by avoiding the overhead of explicit transaction management, while guaranteeing data consistency for critical, multi-statement operations.
+- *Flexibility*: It provides the best of both worlds: simplicity for common reads/writes and robust transaction support for complex business logic.
+- *Testability*: Both standalone query classes (with injected ~db_client~) and connection-based functions are relatively easy to test in isolation.
+
+This dual approach provides flexibility, allowing for efficient execution of simple queries while guaranteeing data integrity for critical, multi-statement operations. The separation of concerns is further reinforced by organizing these patterns into distinct modules or sections within the codebase, enhancing clarity and maintainability.
+
+** Endnote
+लिखा LLM ने है, लेकिन शब्द हमारे है।

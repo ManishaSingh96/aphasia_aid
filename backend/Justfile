@@ -1,5 +1,5 @@
 image_repo := "some_repository"
-image_name := "backend"
+image_name := "sia"
 image_id := "latest"
 platform := if `nix eval --impure --raw --expr 'builtins.currentSystem'` == "x86_64-linux" { "amd64" } else { "arm64" }
 image_tag := image_id + "_" + platform
@@ -15,7 +15,7 @@ test:
 _check-lint:
     @echo "Linting with Ruff..."
     @ruff check .
-	@pyright
+    @pyright
 
 # Run the static type checker
 _check-type:
@@ -50,14 +50,14 @@ fix: _fix-lint _fix-format
 fix-force: _fix-lint-force _fix-format
 
 # run the worker
-backend-server:
+server:
   uv run server
 
 docker-build:
 	IMAGE_NAME={{image_repo}}/{{image_name}} \
 	IMAGE_TAG={{image_tag}} \
 	nix build -o ./results/{{image_file}} \
-	--impure --show-trace .#backend_docker
+	--impure --show-trace .#sia_docker
 
 docker-load:
 	docker load < ./results/{{image_file}}
@@ -69,12 +69,18 @@ docker-run:
 docker-push:
 	docker push {{ image_repo }}/{{image_name}}:{{image_tag}}
 
-docker-manifest-push:
-	docker pull "{{ image_repo }}/{{image_name}}:{{image_id}}_amd64"
+docker-manifest: _docker-manifest-create _docker-manifest-push
+
+_docker-manifest-create:
 	docker pull "{{ image_repo }}/{{image_name}}:{{image_id}}_arm64"
-
 	docker manifest create "{{ image_repo }}/{{ image_name }}:{{ image_id }}" \
-	--amend "{{ image_repo }}/{{ image_name }}:{{ image_id }}_amd64" \
-	--amend "{{ image_repo }}/{{ image_name }}:{{ image_id }}_arm64"
+	"{{ image_repo }}/{{ image_name }}:{{ image_id }}_arm64"
 
+# include this if needed
+_docker-manifest-amd64:
+	docker pull "{{ image_repo }}/{{image_name}}:{{image_id}}_amd64"
+	docker manifest admend "{{ image_repo }}/{{ image_name }}:{{ image_id }}" \
+	"{{ image_repo }}/{{ image_name }}:{{ image_id }}_amd64" \
+
+_docker-manifest-push:
 	docker manifest push "{{ image_repo }}/{{ image_name }}:{{ image_id }}"

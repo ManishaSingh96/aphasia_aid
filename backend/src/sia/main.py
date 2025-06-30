@@ -6,9 +6,12 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 
+from sia.db.connection import DatabaseClient
+from sia.db.queries.car_queries import CarQueries
+
 from .config import settings
 from .routers import (
-    cash,
+    car,
 )
 from .telemetry.log import get_logger, init_logger
 
@@ -25,8 +28,31 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     Initializes and shuts down application resources.
     """
+    db_client = await DatabaseClient.create(
+        min_size=settings.db_min_size,
+        max_size=settings.db_max_size,
+        conn_str=settings.db_connection_string,
+    )
+    await db_client.seed()
+
+    app.state.dbClient = db_client
+    app.state.carQueries = CarQueries(db_client=db_client)
+
     logger.info("initializing application")
+
+    # Log all available endpoints
+    base_url = f"http://{settings.host}:{settings.port}"
+    logger.info("Available API Documentation and Specification Endpoints:")
+    logger.info(f"  - Swagger UI: {base_url}/docs")
+    logger.info(f"  - ReDoc: {base_url}/redoc")
+    logger.info(f"  - OpenAPI JSON: {base_url}/openapi.json")
+    logger.info(f"  - Health Check: {base_url}{HEALTH_CHECK_ENDPOINT}")
+    logger.info(f"  - Root: {base_url}/")
     yield
+
+    if hasattr(app.state, "dbClient"):
+        await app.state.dbClient.close()
+
     logger.info("shutdown complete")
 
 
@@ -106,7 +132,7 @@ async def root() -> Dict[str, str]:
 
 
 # routers
-app.include_router(cash.router, prefix=settings.api_v1_prefix)
+app.include_router(car.router, prefix=settings.api_v1_prefix)
 
 
 def main() -> None:
