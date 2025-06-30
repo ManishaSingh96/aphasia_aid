@@ -7,11 +7,11 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 
 from sia.db.connection import DatabaseClient
-from sia.db.queries.car_queries import CarQueries
+from sia.db.queries.activity_queries import ActivityQueries
 
 from .config import settings
 from .routers import (
-    car,
+    activity,
 )
 from .telemetry.log import get_logger, init_logger
 
@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     await db_client.seed()
 
     app.state.dbClient = db_client
-    app.state.carQueries = CarQueries(db_client=db_client)
+    app.state.activityQueries = ActivityQueries(db_client=db_client)
 
     logger.info("initializing application")
 
@@ -132,7 +132,7 @@ async def root() -> Dict[str, str]:
 
 
 # routers
-app.include_router(car.router, prefix=settings.api_v1_prefix)
+app.include_router(activity.router, prefix=settings.api_v1_prefix)
 
 
 def main() -> None:

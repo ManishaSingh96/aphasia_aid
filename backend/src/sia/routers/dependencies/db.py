@@ -1,8 +1,8 @@
 from fastapi import Request
 
-from sia.db.queries.car_queries import CarQueries
+from sia.db.queries.activity_queries import ActivityQueries
 
 
-def get_car_queries(request: Request) -> CarQueries:
-    """Return the CarQueries instance from the application state."""
-    return request.app.state.carQueries
+def get_activity_queries(request: Request) -> ActivityQueries:
+    """Return the ActivityQueries instance from the application state."""
+    return request.app.state.activityQueries

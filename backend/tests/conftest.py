@@ -5,7 +5,7 @@ from test_helpers.realmock_db import create_test_db_async
 from test_helpers.test_queries_model import TestQueries
 
 from sia.db.connection import DatabaseClient
-from sia.db.queries.car_queries import CarQueries
+from sia.db.queries.activity_queries import ActivityQueries
 
 # tests/
 # ├── conftest.py               # db_session, http_client — global fixtures
@@ -43,7 +43,7 @@ async def test_db_client_w_test_db() -> AsyncGenerator[
         conn_str=f"dbname={db_name}",
     )
     queries = TestQueries(
-        car=CarQueries(client),
+        activity=ActivityQueries(client),
     )
     await client.seed()
     yield client, queries

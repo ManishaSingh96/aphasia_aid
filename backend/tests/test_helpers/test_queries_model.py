@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
-from sia.db.queries.car_queries import CarQueries
+from sia.db.queries.activity_queries import ActivityQueries
 
 
 class TestQueries(BaseModel):
@@ -13,4 +13,4 @@ class TestQueries(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    car: CarQueries
+    activity: ActivityQueries
