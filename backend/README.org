@@ -22,8 +22,6 @@ CREATE TABLE auth.users (
 ** API Endpoints
 The following API endpoints have been implemented in ~backend/src/sia/routers/activity.py~:
 
-- ~GET /test~ : Test endpoint to verify the activity router is working.
-
 - ~GET /activities~ : Lists all activities for the user (no pagination implemented).
   - Requires ~user_id~ as a parameter.
   - Returns a list of Activity objects.

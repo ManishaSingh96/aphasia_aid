@@ -80,11 +80,6 @@ async def dummy_call_remote_activity_generation_endpoint(
     )
 
 
-@router.get("/test")
-async def test_activity() -> dict:
-    return {"message": "Test activity router"}
-
-
 @router.get("/activities", response_model=List[Activity])
 async def list_activities(
     user_id: uuid.UUID,
