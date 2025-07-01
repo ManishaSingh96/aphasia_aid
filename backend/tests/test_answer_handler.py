@@ -1,7 +1,7 @@
 import uuid
 
-from fastapi import HTTPException, status
 import pytest
+from fastapi import HTTPException, status
 from test_helpers.test_queries_model import TestQueries
 
 from sia.db.connection import DatabaseClient
@@ -370,7 +370,7 @@ async def test_handle_submit_activity_item_answer_skip(
             activity_id,
         )
     fetched_activity, _, _ = await queries.activity.get_activity_with_details_by_id(
-      activity_id,
+        activity_id,
     )
 
     assert updated_item_2 is not None
@@ -442,42 +442,39 @@ async def test_handle_submit_activity_item_answer_item_wrong_activity(
                 item_id_from_activity_1,
                 answer_params,
             )
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert (
-        "Activity item does not belong to the specified activity"
-        in exc_info.value.detail
+    assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
+    assert "Activity item not found" in exc_info.value.detail
+
+
+@pytest.mark.asyncio
+async def test_handle_submit_activity_item_answer_item_already_terminal(
+    test_db_client_w_test_db: tuple[DatabaseClient, TestQueries],
+    create_user: User,
+) -> None:
+    db_client, _ = test_db_client_w_test_db
+    user = create_user
+    activity_id, item_ids = await _create_test_activity_and_items(
+        db_client,
+        user,
+        initial_item_status=ActivityItemStatus.SUCCESS,
+    )
+    item_id = item_ids[0]
+
+    answer_params = ActivityAnswerCreate(
+        activity_item_id=item_id,
+        # activity_type=ActivityItemType.FREE_TEXT,
+        answer=FreeTextAnswer(activity_type=ActivityItemType.FREE_TEXT, text="Answer"),
+        is_correct=True,
+        skip=False,
     )
 
-
-# @pytest.mark.asyncio
-# async def test_handle_submit_activity_item_answer_item_already_terminal(
-#     test_db_client_w_test_db: tuple[DatabaseClient, TestQueries],
-#     create_user: User,
-# ) -> None:
-#     db_client, _ = test_db_client_w_test_db
-#     user = create_user
-#     activity_id, item_ids = await _create_test_activity_and_items(
-#         db_client,
-#         user,
-#         initial_item_status=ActivityItemStatus.SUCCESS,
-#     )
-#     item_id = item_ids[0]
-
-#     answer_params = ActivityAnswerCreate(
-#         activity_item_id=item_id,
-#         # activity_type=ActivityItemType.FREE_TEXT,
-#         answer=FreeTextAnswer(activity_type=ActivityItemType.FREE_TEXT, text="Answer"),
-#         is_correct=True,
-#         skip=False,
-#     )
-
-#     with pytest.raises(HTTPException) as exc_info:
-#         async with db_client.pool.connection() as conn:
-#             await handle_submit_activity_item_answer(
-#                 conn,
-#                 activity_id,
-#                 item_id,
-#                 answer_params,
-#             )
-#     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-#     assert "Activity item is already in a terminal state." in exc_info.value.detail
+    with pytest.raises(HTTPException) as exc_info:
+        async with db_client.pool.connection() as conn:
+            await handle_submit_activity_item_answer(
+                conn,
+                activity_id,
+                item_id,
+                answer_params,
+            )
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert "Activity item is already in a terminal state." in exc_info.value.detail
