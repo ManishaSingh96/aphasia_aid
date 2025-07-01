@@ -1,5 +1,5 @@
 import uuid
-from typing import Any, List
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -13,6 +13,7 @@ from sia.db.transactions.activity_transactions import (
 )
 from sia.routers.answer_handler import handle_submit_activity_item_answer
 from sia.routers.dependencies.db import get_db_client
+from sia.schemas.api.answer_response import AnswerResponse
 from sia.schemas.db.activity import Activity
 from sia.schemas.db.activity_answer import ActivityAnswerCreate
 from sia.schemas.db.activity_item import ActivityItem, ActivityItemCreateRelaxed
@@ -213,10 +214,10 @@ async def submit_activity_item_answer(
     user_id: uuid.UUID,  # Assuming user_id is available from auth
     answer_params: ActivityAnswerCreate,
     db_client: DatabaseClient = DB_CLIENT,
-) -> dict[str, Any]:
+) -> AnswerResponse:
     """Submits an answer for an activity item, updates its state, and checks for activity completion."""
     async with db_client.pool.connection() as conn:
-        response_data: dict[str, Any] = await handle_submit_activity_item_answer(
+        response_data: AnswerResponse = await handle_submit_activity_item_answer(
             conn,
             activity_id,
             activity_item_id,

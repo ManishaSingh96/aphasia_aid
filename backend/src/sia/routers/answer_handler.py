@@ -12,9 +12,10 @@ from sia.db.transactions.activity_transactions import (
     update_activity_item_attempts_and_status,
     update_activity_status,
 )
+from sia.schemas.api.answer_response import AnswerResponse
 from sia.schemas.db.activity_answer import ActivityAnswerCreate
 from sia.schemas.db.activity_item import ActivityItem
-from sia.schemas.db.enums import ActivityItemStatus, ActivityStatus
+from sia.schemas.db.enums import ActivityItemStatus, ActivityItemType, ActivityStatus
 from sia.telemetry.log import get_logger
 
 logger = get_logger(__name__)
@@ -59,7 +60,9 @@ async def _construct_response_data(
     is_correct_answer: bool,
     activity_id: uuid.UUID,
     activity_completed: bool,
-) -> dict:
+    activity_type: str,
+) -> AnswerResponse:  # Return type remains AnswerResponse
+    activity_type = ActivityItemType(activity_type)
     next_item_id = None
     if updated_item.status in [
         ActivityItemStatus.SKIP,
@@ -79,13 +82,25 @@ async def _construct_response_data(
     ]:
         question_config = updated_item.question_config
         hints = question_config.hints
+        # # Ensure hints are of the correct type for the response model
+        # # if activity_type == ActivityItemType.FREE_TEXT:
+        # #     # Assuming question_config.hints are already FreeTextAnswerHint or compatible
+        # #     hints = [
+        # #         FreeTextAnswerHint.model_validate(h.model_dump())
+        # #         for h in question_config.hints
+        # #     ]
+        # else:
+        #     # Handle other hint types or raise an error
+        #     hints = []  # Default to empty list for unsupported types for now
 
-    return {
-        "next_item_id": next_item_id,
-        "hints": hints,
-        "success_verdict": is_correct_answer,
-        "activity_complete": activity_completed,
-    }
+    # Construct the single AnswerResponse model
+    return AnswerResponse(
+        next_item_id=next_item_id,
+        hints=hints,
+        success_verdict=is_correct_answer,
+        activity_complete=activity_completed,
+        activity_type=activity_type,
+    )
 
 
 async def handle_submit_activity_item_answer(
@@ -93,15 +108,8 @@ async def handle_submit_activity_item_answer(
     activity_id: uuid.UUID,
     activity_item_id: uuid.UUID,
     answer_params: ActivityAnswerCreate,
-) -> dict:
+) -> AnswerResponse:  # Return type remains AnswerResponse
     """Submits an answer for an activity item, updates its state, and checks for activity completion."""
-    response_data: dict = {
-        "next_item_id": None,
-        "hints": [],
-        "success_verdict": False,
-        "activity_complete": False,
-    }
-
     # 1. Retrieve Current ActivityItem
     activity_item = await get_activity_item_in_transaction(
         conn,
@@ -186,6 +194,7 @@ async def handle_submit_activity_item_answer(
         answer_params.is_correct,
         activity_id,
         activity_completed,
+        updated_activity_item.question_config.activity_type,  # Pass activity_type
     )
 
     return response_data
