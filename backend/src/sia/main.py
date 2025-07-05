@@ -10,9 +10,8 @@ from sia.db.connection import DatabaseClient
 from sia.db.queries.activity_queries import ActivityQueries
 
 from .config import settings
-from .routers import (
-    activity,
-)
+from .routers import profile
+from .routers.activity import activity
 from .telemetry.log import get_logger, init_logger
 
 init_logger()
@@ -133,6 +132,7 @@ async def root() -> Dict[str, str]:
 
 # routers
 app.include_router(activity.router, prefix=settings.api_v1_prefix)
+app.include_router(profile.router, prefix=settings.api_v1_prefix)
 
 
 def main() -> None:

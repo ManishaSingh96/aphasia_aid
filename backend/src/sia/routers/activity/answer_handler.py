@@ -82,16 +82,6 @@ async def _construct_response_data(
     ]:
         question_config = updated_item.question_config
         hints = question_config.hints
-        # # Ensure hints are of the correct type for the response model
-        # # if activity_type == ActivityItemType.FREE_TEXT:
-        # #     # Assuming question_config.hints are already FreeTextAnswerHint or compatible
-        # #     hints = [
-        # #         FreeTextAnswerHint.model_validate(h.model_dump())
-        # #         for h in question_config.hints
-        # #     ]
-        # else:
-        #     # Handle other hint types or raise an error
-        #     hints = []  # Default to empty list for unsupported types for now
 
     # Construct the single AnswerResponse model
     return AnswerResponse(

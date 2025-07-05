@@ -12,7 +12,7 @@ from sia.db.transactions.activity_transactions import (
     get_activity_items_for_activity_in_transaction,  # Added import
     update_activity_item_attempts_and_status,
 )
-from sia.routers.answer_handler import handle_submit_activity_item_answer
+from sia.routers.activity.answer_handler import handle_submit_activity_item_answer
 from sia.schemas.db.activity import ActivityCreate
 from sia.schemas.db.activity_answer import ActivityAnswerCreate
 from sia.schemas.db.activity_item import ActivityItemCreateRelaxed
