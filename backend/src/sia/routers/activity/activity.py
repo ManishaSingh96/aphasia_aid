@@ -15,11 +15,10 @@ from sia.routers.activity.answer_handler import handle_submit_activity_item_answ
 from sia.routers.dependencies.auth import get_current_user
 from sia.routers.dependencies.db import get_activity_queries, get_db_client
 from sia.schemas.api.answer_response import AnswerResponse
-from sia.schemas.db.activity import Activity
-from sia.schemas.db.activity_answer import ActivityAnswerCreate
+from sia.schemas.db.activity import Activity, FullActivityDetails
+from sia.schemas.db.activity_answer import ActivityAnswer, ActivityAnswerCreate
 from sia.schemas.db.activity_item import ActivityItem, ActivityItemCreateRelaxed
 from sia.schemas.db.enums import ActivityStatus
-from sia.schemas.db.user_profile import Profile
 from sia.telemetry.log import get_logger
 
 logger = get_logger(__name__)
@@ -39,10 +38,6 @@ current_user_dependency = Depends(get_current_user)
 async def dummy_call_remote_activity_generation_endpoint(
     user_id: uuid.UUID,
 ) -> CreateActivityParams:
-    logger.info(
-        "Calling dummy remote activity generation endpoint for user %s",
-        user_id,
-    )
     # This is a placeholder for the actual remote call
     # For now, return dummy data
     from sia.schemas.db.activity import ActivityCreate
@@ -89,21 +84,21 @@ async def dummy_call_remote_activity_generation_endpoint(
 
 @router.get("/", response_model=List[Activity])
 async def list_activities(
-    current_user: Profile = current_user_dependency,
+    current_user: uuid.UUID = current_user_dependency,
     activity_queries: ActivityQueries = activity_queries_dependency,
 ) -> List[Activity]:
     """List all activities for the user."""
     activities: List[Activity] = await activity_queries.get_all_activities_of_user(
-        current_user.user_id,
+        current_user,
     )
     return activities
 
 
-@router.get("/{activity_id}/details", response_model=Activity)
+@router.get("/{activity_id}/details", response_model=FullActivityDetails)
 async def get_activity_details(
     activity_id: uuid.UUID,
     activity_queries: ActivityQueries = activity_queries_dependency,
-) -> Activity:
+) -> FullActivityDetails:
     """Gets info about individual activity, including related activity items and answers."""
     (
         activity,
@@ -115,11 +110,12 @@ async def get_activity_details(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Activity not found",
         )
-    # For now, we return only the activity. The client can fetch items/answers separately
-    # or we can extend the Activity schema to include them if needed.
-    # The prompt mentioned "we can do a join to get activity items related to this activity"
-    # which get_activity_with_details_by_id already does.
-    return activity
+    # Return all three components as a FullActivityDetails object
+    return FullActivityDetails(
+        activity=activity,
+        activity_items=activity_items,
+        activity_answers=activity_answers,
+    )
 
 
 @router.get(
@@ -144,9 +140,11 @@ async def get_activity_item(
     return activity_item
 
 
+# TODO: 1. Profile specific generation, also take in context that'll be helpful
+# for the ai to generate the questions
 @router.post("/create", response_model=Activity)
 async def create_new_activity(
-    current_user: Profile = current_user_dependency,
+    current_user: uuid.UUID = current_user_dependency,
     db_client: DatabaseClient = db_client_dependency,
 ) -> Activity:
     """
@@ -154,7 +152,7 @@ async def create_new_activity(
     then stores the activity and its items in a transaction.
     """
     activity_params = await dummy_call_remote_activity_generation_endpoint(
-        current_user.user_id,
+        current_user,
     )
     async with db_client.pool.connection() as conn:
         created_activity = await create_activity(conn, activity_params)
@@ -164,7 +162,7 @@ async def create_new_activity(
 @router.post("/{activity_id}/start", response_model=ActivityItem)
 async def start_activity(
     activity_id: uuid.UUID,
-    current_user: Profile = current_user_dependency,
+    current_user: uuid.UUID = current_user_dependency,
     db_client: DatabaseClient = db_client_dependency,
     activity_queries: ActivityQueries = activity_queries_dependency,
 ) -> ActivityItem:
@@ -180,7 +178,7 @@ async def start_activity(
                 detail="Activity not found",
             )
 
-        if activity.user_id != current_user.user_id:
+        if activity.user_id != current_user:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User does not have access to this activity",
@@ -216,7 +214,7 @@ async def submit_activity_item_answer(
     activity_id: uuid.UUID,
     activity_item_id: uuid.UUID,
     answer_params: ActivityAnswerCreate,
-    current_user: Profile = current_user_dependency,
+    current_user: uuid.UUID = current_user_dependency,
     db_client: DatabaseClient = db_client_dependency,
 ) -> AnswerResponse:
     """Submits an answer for an activity item, updates its state, and checks for activity completion."""

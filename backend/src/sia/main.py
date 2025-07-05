@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse, Response
 
 from sia.db.connection import DatabaseClient
 from sia.db.queries.activity_queries import ActivityQueries
+from sia.db.queries.user_queries import UserQueries
 
 from .config import settings
 from .routers import profile
@@ -36,6 +37,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     app.state.dbClient = db_client
     app.state.activityQueries = ActivityQueries(db_client=db_client)
+    app.state.userQueries = UserQueries(db_client=db_client)
 
     logger.info("initializing application")
 

@@ -5,7 +5,6 @@ from fastapi import Depends, Header, HTTPException, Request, status
 from sia.db.connection import DatabaseClient
 from sia.db.queries.user_queries import UserQueries
 from sia.routers.dependencies.db import get_db_client
-from sia.schemas.db.user_profile import Profile
 
 TOKEN_PREFIX = "Bearer "  # noqa: S105 # nosec
 
@@ -16,8 +15,8 @@ async def get_current_user(
     request: Request,
     db_client: DatabaseClient = db_client_dependency,
     authorization: str = Header(...),
-) -> Profile:
-    """Get the current user profile from the bearer token."""
+) -> uuid.UUID:
+    """Get the current user ID from the bearer token and validate its existence."""
     try:
         # Assuming the user_id is directly the bearer token value
         # e.g., Authorization: Bearer <user_id>
@@ -40,11 +39,11 @@ async def get_current_user(
         ) from e
 
     user_queries = UserQueries(db_client)
-    profile = await user_queries.get_profile_by_user_id(user_id)
+    user_exists = await user_queries.check_user_exists(user_id)
 
-    if not profile:
+    if not user_exists:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User profile not found",
+            detail="User not found",
         )
-    return profile
+    return user_id

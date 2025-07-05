@@ -1,0 +1,26 @@
+default:
+	@just --list
+
+# check everything
+spin: test lint format
+
+build:
+	npm run build
+
+dev:
+	npm run dev
+
+test:
+	npm run test:run
+
+test-watch:
+	npm run test
+
+lint:
+	npm run lint
+
+format:
+	npm run format
+
+deps-check:
+	pnpx taze major

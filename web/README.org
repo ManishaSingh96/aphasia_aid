@@ -1,0 +1,25 @@
+* App Example
+
+* Vite Notes
+
+** Vite Environment Variables and Type Definitions
+
+*** =vite-env.d.ts=
+This file is a TypeScript declaration file (=.d.ts=) that includes the directive =/// <reference types="vite/client" />=. Its purpose is to provide type definitions for Vite's client-side environment. This enables:
+- *Type Safety*: Ensures that when you access =import.meta.env= for environment variables (e.g., =import.meta.env.VITE_API_URL=), TypeScript knows the expected types, preventing runtime errors.
+- *Autocompletion*: Provides intelligent code suggestions for Vite-specific features in your IDE.
+
+*** Vite's =.env= File Loading
+Vite automatically loads environment variables from =.env= files based on the current mode.
+- *Development Mode* (e.g., =vite=, =vite dev=): Variables are loaded from =.env.development= (if present) and then from =.env=. Variables in =.env.development= take precedence.
+- *Production Mode* (e.g., =vite build=): Variables are loaded from =.env.production= (if present) and then from =.env=.
+- *Exposure to Client-Side*: Only variables prefixed with =VITE_= (e.g., =VITE_APP_TITLE=) are exposed to the client-side code via =import.meta.env= to prevent accidental leakage of sensitive information.
+
+*** Version Control Best Practices for =.env= Files
+Generally, =.env= files (especially those containing sensitive information like API keys, database credentials, or other secrets) should *not* be committed to version control (=.gitignore= them). This is a standard security practice to prevent sensitive data from being exposed in public repositories or shared inadvertently.
+
+However, for front-end projects, if =.env.development= and =.env.production= files *only* contain non-sensitive configuration (e.g., public API endpoints, non-sensitive feature flags, or build-time constants that are not secrets), and these values are consistent across all development and deployment environments, then checking them into version control *might* be acceptable for convenience and consistency.
+
+**** Recommendation:
+- Always =.gitignore= the base =.env= file and any =.env.*.local= files (e.g., =.env.development.local=, =.env.production.local=) which are intended for local overrides and sensitive data.
+- For =.env.development= and =.env.production=, assess the content. If they contain *any* sensitive information, they should be =.gitignore=d. If they contain *only* non-sensitive, publicly known configuration that is consistent across all environments, then checking them in can be considered, but it's generally safer to err on the side of caution and keep them out of version control, providing =.env.example= files instead.

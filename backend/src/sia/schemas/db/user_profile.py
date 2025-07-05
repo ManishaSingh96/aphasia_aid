@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 class PatientMetadata(BaseModel):
     patient_name: str
-    patient_age: str
+    patient_age: int
     city: str
     language: str
     diagnosis: str

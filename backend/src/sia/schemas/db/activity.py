@@ -1,8 +1,11 @@
 import uuid
 from datetime import datetime
+from typing import List
 
 from pydantic import BaseModel
 
+from sia.schemas.db.activity_answer import ActivityAnswer
+from sia.schemas.db.activity_item import ActivityItem
 from sia.schemas.db.enums import ActivityStatus
 
 # -- Activity
@@ -21,3 +24,9 @@ class ActivityCreate(ActivityBase):
 class Activity(ActivityBase):
     id: uuid.UUID
     created_at: datetime
+
+
+class FullActivityDetails(BaseModel):
+    activity: Activity
+    activity_items: List[ActivityItem]
+    activity_answers: List[ActivityAnswer]
