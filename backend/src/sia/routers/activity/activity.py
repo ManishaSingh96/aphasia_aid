@@ -218,6 +218,10 @@ async def submit_activity_item_answer(
     db_client: DatabaseClient = db_client_dependency,
 ) -> AnswerResponse:
     """Submits an answer for an activity item, updates its state, and checks for activity completion."""
+
+    # TODO: EVALUATE ANSWER HERE, CALL AI, CHECK DIRECTLY, DO WHATEVR
+
+
     async with db_client.pool.connection() as conn:
         response_data: AnswerResponse = await handle_submit_activity_item_answer(
             conn,
