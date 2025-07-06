@@ -32,3 +32,5 @@ env/
 # Cache
 *.cache
 *.pytest_cache/
+**.json
+*.json
