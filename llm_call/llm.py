@@ -12,6 +12,8 @@ class OpenAITextGenerator:
         openai.api_key = self.api_key
 
     def generate(self, input_text):
+        if hasattr(input_text[0],"dict"):
+            input_text=[m.dict() for m in input_text]
         response = openai.ChatCompletion.create(
             model=self.model_name,
             messages=input_text,

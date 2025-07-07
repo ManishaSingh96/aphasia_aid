@@ -1,6 +1,6 @@
 import os
 import json
-from prompt import prompt,evaluator_agent_prompt
+# from prompt import prompt,evaluator_agent_prompt
 from pydub import AudioSegment
 from pydub.playback import play
 import io,re
@@ -19,7 +19,7 @@ class generate_therapist:
             language=language,
             )
         
-        ##### add validaot agent which will check language is coorect if not rerun
+        ##### add validaton agent which will check if the language is correct if not rerun
         try:
             messages=[{"role": "user", "content": prompt_filled}]
             response = httpx.post(
@@ -59,8 +59,6 @@ class generate_therapist:
             return None
         
     def main(self,location, profession, language):
-        
-            
         questions=self._generatequestion(location, profession, language)
         return questions
     

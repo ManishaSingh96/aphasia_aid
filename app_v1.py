@@ -2,8 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from llm_call.llm_api import router as llm_router
 from therapist.th_api import router as therapist_router
+import os
 
 app = FastAPI(title="Aphasia AI API")
+
 
 # Add CORS middleware
 app.add_middleware(

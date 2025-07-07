@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from therapist.model import generate_therapist
+from database import SessionLocal
+from models import Interaction
 
 router = APIRouter()
 therapist = generate_therapist()
@@ -41,6 +43,17 @@ def validate_user_response(request: ValidRequest):
             request.user_ans,
             request.correct_ans
         )
+        db = SessionLocal()
+        interaction = Interaction(
+            step_type=request.step_type,
+            question=request.question,
+            object=request.object,
+            user_ans=request.user_ans,
+            correct_ans=request.correct_ans,
+            response=output['feedback_hint'])
+        db.add(interaction)
+        db.commit()
+        db.close()
         return {"response": output}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
