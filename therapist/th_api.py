@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from therapist.model import generate_therapist
+from typing import Dict
 
 router = APIRouter()
 therapist = generate_therapist()
@@ -9,21 +10,46 @@ class PromptRequest(BaseModel):
     location: str
     profession: str
     language: str
+    severity:str
+
+class EvalTestrequest(BaseModel):
+    object: str
+    question: str
+    question_type: str
+    patient_response:str
+
 
 class ValidRequest(BaseModel):
-    step_type: str
-    question: str
     object: str
-    user_ans: str
-    correct_ans: str
+    question_type: str
+    question: str
+    user_response: str
+    user_history: Dict[int, str] = {} 
+    hint_history: Dict[int, str] = {}  
+    
+
 
 @router.post("/exercise_sets")
 def generate_exercise_sets(request: PromptRequest):
     """
-    Generate therapist-based exercise sets based on location, profession, and language.
+    Generate therapist-based exercise sets based on patient profile
     """
     try:
-        output = therapist.main(request.location, request.profession, request.language)
+        output = therapist.main(request.location, request.profession, request.language,request.severity)
+
+        return {"response": output}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/validate_evaluator")
+def evaluator_test(request: EvalTestrequest):
+    """
+    Evalutor testing 
+    """
+    try:
+        output = therapist._testevaluator(
+            request.object, request.question, request.question_type,request.patient_response)
+
         return {"response": output}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -35,11 +61,12 @@ def validate_user_response(request: ValidRequest):
     """
     try:
         output = therapist.evaluate(
-            request.step_type,
-            request.question,
             request.object,
-            request.user_ans,
-            request.correct_ans
+            request.question,
+            request.question_type,
+            request.user_response,
+            request.user_history,
+            request.hint_history,  
         )
         return {"response": output}
     except Exception as e:
