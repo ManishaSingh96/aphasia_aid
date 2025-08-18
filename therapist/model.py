@@ -38,8 +38,8 @@ class generate_therapist:
         self.hint_agent = hint_agent
         self.ph_hint=ph_hint
         self.url="http://localhost:7878/api/llm/generate"
-    def _generatequestionlist(self, location, profession, language,severity):
-        raw_output = self.question_agent.generate_questions_for_severity(location, profession, language,severity)
+    def _generatequestionlist(self, age,gender,lifestyle,location, profession, language,severity):
+        raw_output = self.question_agent.generate_questions_for_severity(age,gender,lifestyle,location, profession, language,severity)
         object_list=(raw_output)["object_list"]
         question_list={}
         for q_no,obj in enumerate(object_list):
@@ -54,8 +54,8 @@ class generate_therapist:
         evaluation = extract_json_from_response(evaluation_json)
         return evaluation
         
-    def main(self,location, profession, language,severity):
-        questions=self._generatequestionlist(location, profession, language,severity)
+    def main(self,age,gender,lifestyle,location, profession, language,severity):
+        questions=self._generatequestionlist(age,gender,lifestyle,location, profession, language,severity)
         return questions
     
     def _generatequestion(self,object,question_type):

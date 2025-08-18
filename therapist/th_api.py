@@ -7,6 +7,9 @@ router = APIRouter()
 therapist = generate_therapist()
 
 class PromptRequest(BaseModel):
+    age:str
+    gender:str
+    lifestyle:str
     location: str
     profession: str
     language: str
@@ -35,7 +38,7 @@ def generate_exercise_sets(request: PromptRequest):
     Generate therapist-based exercise sets based on patient profile
     """
     try:
-        output = therapist.main(request.location, request.profession, request.language,request.severity)
+        output = therapist.main(request.age,request.gender,request.lifestyle,request.location, request.profession, request.language,request.severity)
 
         return {"response": output}
     except Exception as e:
