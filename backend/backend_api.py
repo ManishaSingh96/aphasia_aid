@@ -17,6 +17,8 @@ THERAPIST_EXERCISE_URL = "http://localhost:7878/api/exercise_sets"
 THERAPIST_VALIDATE_URL = "http://localhost:7878/api/validate_sets"
 
 class PromptRequest(BaseModel):
+    age:str
+    gender:str
     location: str
     profession: str
     language: str
@@ -77,6 +79,8 @@ def generate_exercise_sets(request: PromptRequest, db: Session = Depends(get_db)
         response.raise_for_status()
         result = response.json()
         db.add(ExerciseInteraction(
+            age=request.age,
+            gender=request.gender,
             location=request.location,
             profession=request.profession,
             language=request.language,

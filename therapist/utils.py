@@ -1,4 +1,5 @@
 import os , json ,re
+import  pandas as pd
 def extract_json_from_response(response_str):
     """
     Cleans and extracts the first JSON object from the LLM output.
@@ -56,4 +57,25 @@ def _as_dict(value):
     except Exception:
         return {}
 
+def load_dataset(path_or_name: str) -> pd.DataFrame:
+    """Load dataset from parquet or csv; infer extension if only name provided."""
+    candidates = []
+    if os.path.exists(path_or_name):
+        candidates.append(path_or_name)
+    else:
+        candidates.extend([
+            f"{path_or_name}.parquet",
+            f"{path_or_name}.csv",
+        ])
+
+    for candidate in candidates:
+        if os.path.exists(candidate):
+            if candidate.endswith(".parquet"):
+                return pd.read_parquet(candidate)
+            if candidate.endswith(".csv"):
+                return pd.read_csv(candidate)
+
+    raise FileNotFoundError(
+        f"Could not find dataset for '{path_or_name}'. Tried: {', '.join(candidates)}"
+    )
 

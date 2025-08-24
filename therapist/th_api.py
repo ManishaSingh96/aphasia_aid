@@ -9,7 +9,6 @@ therapist = generate_therapist()
 class PromptRequest(BaseModel):
     age:str
     gender:str
-    lifestyle:str
     location: str
     profession: str
     language: str
@@ -17,9 +16,6 @@ class PromptRequest(BaseModel):
 
 class EvalTestrequest(BaseModel):
     object: str
-    question: str
-    question_type: str
-    patient_response:str
 
 
 class ValidRequest(BaseModel):
@@ -38,7 +34,7 @@ def generate_exercise_sets(request: PromptRequest):
     Generate therapist-based exercise sets based on patient profile
     """
     try:
-        output = therapist.main(request.age,request.gender,request.lifestyle,request.location, request.profession, request.language,request.severity)
+        output = therapist.main(request.age,request.gender,request.location, request.profession, request.language,request.severity)
 
         return {"response": output}
     except Exception as e:
@@ -51,7 +47,7 @@ def evaluator_test(request: EvalTestrequest):
     """
     try:
         output = therapist._testevaluator(
-            request.object, request.question, request.question_type,request.patient_response)
+            request.object)
 
         return {"response": output}
     except Exception as e:

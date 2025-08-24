@@ -1,23 +1,27 @@
 import os
+import time
 import json
-# from prompt import prompt,evaluator_agent_prompt
+from tqdm import tqdm
 from pydub import AudioSegment
 from pydub.playback import play
 import io,re
-from therapist.th_prompt import system_prompt, evaluator_agent_prompt,object_selector_agent_prompt,severe_aphasia_quesion_generator_prompt
 import httpx
 from utils import clean_json
 import json
 import re
-from therapist. question_generator import QuestionGeneratorAgent
-from therapist.phonetic_hint_agent import PhoneticHintAgent
-from therapist.classifier_agent import ClassifierAgent
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+import pandas as pd
+from therapist. conversation_generator.question_generator import QuestionGeneratorAgent
+from therapist. conversation_generator.phonetic_hint_agent import PhoneticHintAgent
+from therapist. conversation_generator.classifier_agent import ClassifierAgent
 from therapist.utils import extract_json_from_response
-from therapist.question_framing_agent import QuestionFramingAgent
-from therapist.phoentic_critic import PhoneticValidatorAgent
-from therapist.evaluator_agent import EvaluatorAgent
-from therapist.descriptive_hint_agent import HintgeneratorAgent
-from therapist.descriptive_criric import ValidatorAgent
+from therapist. conversation_generator.question_framing_agent import QuestionFramingAgent
+from therapist. conversation_generator.phoentic_critic import PhoneticValidatorAgent
+from therapist. conversation_generator.evaluator_agent import EvaluatorAgent
+from therapist. conversation_generator.descriptive_hint_agent import HintgeneratorAgent
+from therapist. conversation_generator.descriptive_criric import ValidatorAgent
+from therapist.image_generator.image_generator import generate_image
 
 question_agent=QuestionGeneratorAgent()
 ph_hint=PhoneticHintAgent()
@@ -29,6 +33,17 @@ ph_critic=PhoneticValidatorAgent()
 hint_agent=HintgeneratorAgent()
 hint_v=ValidatorAgent()
 
+image_gen=generate_image(model='text-embedding-3-large',batch_size=500)
+FALLBACK_IMAGE = "http://static.flickr.com/2723/4385058960_b0f291553e.jpg"
+
+def _extract_object_name(obj):
+    """Accepts either 'apple' or {'english':'apple', ...} and returns a string."""
+    if isinstance(obj, dict):
+        return obj.get("english") or next(
+            (v for v in obj.values() if isinstance(v, str) and v.strip()), ""
+        )
+    return str(obj)
+
 class generate_therapist:
     def __init__(self):
         self.question_agent = question_agent
@@ -37,32 +52,68 @@ class generate_therapist:
         self.classifier=classif
         self.hint_agent = hint_agent
         self.ph_hint=ph_hint
+        self.image_gen=image_gen
         self.url="http://localhost:7878/api/llm/generate"
-    def _generatequestionlist(self, age,gender,lifestyle,location, profession, language,severity):
-        raw_output = self.question_agent.generate_questions_for_severity(age,gender,lifestyle,location, profession, language,severity)
+
+
+    def _generatequestion(self, object, question_type):
+        question = self.question_framer.frame_question_and_hint(object, question_type)
+        # image_url = self.image_gen.generate_image(object) or FALLBACK_IMAGE
+        image_url = FALLBACK_IMAGE
+        return {
+        "object": object,
+        "question": question,
+        "question_type": question_type,
+        "image": image_url
+        }
+
+    def _generatequestionlist(self, age, gender, location, profession, language, severity,
+                              question_type="naming_from_description", max_workers=8, retries=2):
+            raw_output = self.question_agent.generate_questions_for_severity(
+                age, gender, location, profession, language, severity
+            )
+            object_list = raw_output["object_list"]
+            objs = [_extract_object_name(o) for o in object_list]
+
+            results = {}
+            with ThreadPoolExecutor(max_workers=max_workers) as pool:
+                futures = {
+                    pool.submit(self._generatequestion_parallel_task, i, obj, question_type, retries): i
+                    for i, obj in enumerate(objs)
+                }
+                for fut in tqdm(as_completed(futures), total=len(futures), desc="Generating questions"):
+                    i, payload = fut.result()
+                    results[i] = payload
+
+            return {f"q{i + 1}": results.get(i) for i in range(len(objs))}
+
+    def main(self, age, gender, location, profession, language, severity):
+        print("[✓] Generating full question set...")
+        start_time = time.time()
+        questions = self._generatequestionlist(age, gender, location, profession, language, severity)
+        total_time = time.time() - start_time
+        print(f"[✓] Completed all questions in {total_time:.2f} seconds")
+        return questions
+
+    def _generatequestionlist(self, age,gender,location, profession, language,severity):
+        raw_output = self.question_agent.generate_questions_for_severity(age,gender,location, profession, language,severity)
         object_list=(raw_output)["object_list"]
         question_list={}
         for q_no,obj in enumerate(object_list):
             question=self._generatequestion(object=obj,question_type="naming_from_description")
             question_list[f"q{q_no+1}"]=question
         return question_list
+
     
-    def _testevaluator(self,object,question, q_type, user_response):
-        evaluation_json = self.evaluator.evaluate_and_predict(object,question, q_type, user_response)
-        print("evaleval")
-        print(evaluation_json)
-        evaluation = extract_json_from_response(evaluation_json)
-        return evaluation
+    def _testevaluator(self,object):
+        image_url=self.image_gen.generate_image(object)
+        if not image_url:
+            image_url='http://static.flickr.com/2723/4385058960_b0f291553e.jpg'
+        return image_url
         
-    def main(self,age,gender,lifestyle,location, profession, language,severity):
-        questions=self._generatequestionlist(age,gender,lifestyle,location, profession, language,severity)
+    def main(self,age,gender,location, profession, language,severity):
+        questions=self._generatequestionlist(age,gender,location, profession, language,severity)
         return questions
-    
-    def _generatequestion(self,object,question_type):
-        question = self.question_framer.frame_question_and_hint(object,question_type)
-        image_url='http://static.flickr.com/2723/4385058960_b0f291553e.jpg'
-        response={'object':object,'question':question,'question_type':question_type,'image':image_url}
-        return response
     
     def evaluate(self,object,question,question_type,user_response,user_history,hint_reponse,):
         obj = object
