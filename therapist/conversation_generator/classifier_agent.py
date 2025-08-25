@@ -19,21 +19,24 @@ Given a patient's response, **analyze** whether the spoken word is:
 
 ---
 
-#### **Non-gibberish**:
+Non-gibberish:
+
 The word is either:
 
-- A **real, meaningful word**, **OR**
-- A **highly plausible compressed or altered form** of a real word, **only if**:
-    - It clearly **resembles a known word** when spoken aloud
-    - The transformation involves **common phonetic errors** (e.g., dropped syllables, consonant substitutions, vowel elongations)
-    - The original word can be **easily guessed** with high confidence
+-A real, meaningful word OR A plausible phonetic or misspelled form of a real word, including:
+-Hindi words written phonetically in English (e.g., "jal", "dal", "pyaaj")
+-Words with repeated letters or common transliteration mistakes (e.g., "phhal" → "phal", "khaal" → "khaali")
+-Missed or swapped vowels/consonants (e.g., "reech" → "reach", "buk" → "book")
+
+If the intended word is easily guessable based on sound and structure, classify it as non-gibberish.
 
 Examples:
-- "aalaarm" → “alarm” 
-- "saan" → “sun” 
-- "boook" → “book” 
+- "aalaarm" → "alarm"
+- "phhal" → "phal"
+- "buk" → "book"
+- "pyaaj" → "pyaaz"
+- "saan" → "sun"
 
----
 
 #### **Gibberish**:
 The word must be classified as **gibberish** if:
@@ -41,8 +44,11 @@ The word must be classified as **gibberish** if:
 - It **cannot be clearly interpreted** as a real word,
 - It does **not resemble** any known word in English or Hindi (or any widely spoken language),
 - It contains **random, repeated, or unrelated syllables** (e.g., "aallaaa", "zqerp", "moofoo"),
-- Any possible similarity is **too vague or speculative** to determine confidently
--It is **too short** (e.g., "tu", "le", "ra", "bo") and does not map clearly to any valid Hindi/English word
+- Any possible similarity is **too vague or speculative** to determine confidently,
+- It is **too short** (e.g., "tu", "le", "ra", "bo") **and also does not match any known or meaningful Hindi/English word**.
+
+**Important**: Words like “gol”, “tel”, “dal”, “kal”, etc. are short but **meaningful in Hindi**. These should be marked as **non-gibberish**.
+
 
 
 

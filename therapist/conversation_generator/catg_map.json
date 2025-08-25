@@ -1,0 +1,141 @@
+
+{
+  "Bathing & Grooming": [
+    "toothbrush",
+    "toothpaste",
+    "soap",
+    "shampoo",
+    "bucket",
+    "mug",
+    "towel",
+    "comb",
+    "hair oil",
+    "razor",
+    "mirror",
+    "water"
+  ],
+  "Electronics": [
+    "phone",
+    "TV",
+    "earphones",
+    "WhatsApp"
+  ],
+  "Dressing": [
+    "shirt",
+    "pant",
+    "belt",
+    "socks",
+    "shoes",
+    "t-shirt",
+    "baniyan",
+    "underwear",
+    "saree",
+    "suit",
+    "salwar",
+    "dupatta",
+    "bangles",
+    "bindi"
+  ],
+  "Eating & Drinking": [
+    "bowl",
+    "cup",
+    "plate",
+    "fork",
+    "spoon",
+    "straw",
+    "water bottle",
+    "water"
+  ],
+  "Fruits": [
+    "apple",
+    "banana",
+    "mango",
+    "orange",
+    "grapes",
+    "papaya"
+  ],
+  "Housecleaning": [
+    "broom",
+    "washing machine",
+    "mop",
+    "iron",
+    "detergent"
+  ],
+  "Kitchen Tools": [
+    "gas stove",
+    "chula",
+    "tandoor",
+    "lakdi",
+    "cylinder",
+    "knife",
+    "kadhai",
+    "tawa",
+    "rolling pin",
+    "rolling board",
+    "spatula",
+    "mixer grinder",
+    "pressure cooker",
+    "serving spoon",
+    "ladle",
+    "chopping board",
+    "peeler",
+    "grater",
+    "sieve"
+  ],
+  "Medication Management": [
+    "medicine strip",
+    "medicine bottle",
+    "injection",
+    "thermometer",
+    "bandage",
+    "first aid box"
+  ],
+  "Mobility & Safety": [
+    "wheelchair",
+    "walking stick",
+    "crutches",
+    "walker",
+    "helmet",
+    "safety belt"
+  ],
+  "Sleep & Waking Up": [
+    "bed",
+    "pillow",
+    "mattress",
+    "blanket",
+    "alarm clock",
+    "water"
+  ],
+  "Small Appliances": [
+    "fan",
+    "cooler",
+    "AC",
+    "heater",
+    "geyser",
+    "blender",
+    "toaster"
+  ],
+  "Staples & Foods": [
+    "rice",
+    "wheat flour",
+    "lentils",
+    "sugar",
+    "salt",
+    "tea"
+  ],
+  "Toileting": [
+    "toilet seat",
+    "flush",
+    "toilet paper",
+    "bucket",
+    "mug",
+    "soap"
+  ],
+  "Modes of Transport": [
+    "car",
+    "bus",
+    "van",
+    "truck"
+
+  ]
+}

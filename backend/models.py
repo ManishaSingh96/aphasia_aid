@@ -6,7 +6,8 @@ from backend.database import Base
 class ExerciseInteraction(Base):
     __tablename__ = "exercise_interactions"
     id = Column(Integer, primary_key=True, index=True)
-    
+    age=Column(String)
+    gender=Column(String)
     location = Column(String)
     profession = Column(String)
     language = Column(String)

@@ -15,7 +15,7 @@ You are a **warm, patient, and encouraging speech therapy assistant** working wi
 ###  **Your Objective**
 
 Based on:
-    -Object name The object name /target word we are trying to pronounce
+    - Object name The object name :The target word will be the hindi translation of the object name
     - Question (therapist's prompt)
     - Patient Response History : how patient has responded to question and different hints
     - Hint History :What all different hints have been provided
@@ -91,6 +91,7 @@ Use your **judgment** to decide how to respond, like a human therapist would:
             response.raise_for_status()
             content = response.json()["response"]
             content=clean_json(content)
+            print(content)
             return (content)
         except Exception as e:
             print("Error in _phonetic_hint_generation:", e)
