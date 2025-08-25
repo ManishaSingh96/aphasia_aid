@@ -17,7 +17,7 @@ class store_embeddings:
                  source_parquet="cc12m_7m_subset_translated.parquet",
                  max_rows=200,
                  emb_dir="embeddings",
-                 num_workers=16):
+                 num_workers=8):
         self.embedding_model = model
         self.batch_size = batch_size
         self.source_parquet = str(Path(__file__).parent / source_parquet)
