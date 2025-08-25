@@ -52,7 +52,8 @@ class generate_therapist:
 
     def _generatequestion(self, object, question_type):
         question = self.question_framer.frame_question_and_hint(object, question_type)
-        image_url = self.image_gen.generate_image(object) or FALLBACK_IMAGE
+        # image_url = self.image_gen.generate_image(object) or FALLBACK_IMAGE
+        image_url=FALLBACK_IMAGE
         return {
             "object": object,
             "question": question,
@@ -107,50 +108,57 @@ class generate_therapist:
         print(f"[✓] Completed all questions in {total_time:.2f} seconds")
         return questions
 
-    def evaluate(self, object, question, question_type, user_response, user_history, hint_reponse):
-        obj = object
-        q_type = question_type
-        attempt = (max(user_history.keys()) if user_history else 0) + 1
-        ph_hint_history = hint_reponse
-        if len(ph_hint_history) < 1:
-            ph_hint_history[attempt] = "no hint given till now"
-        user_history[attempt] = user_response
+    def _testevaluator(self,object):
+        image_url=self.image_gen.generate_image(object)
+        if not image_url:
+            image_url='http://static.flickr.com/2723/4385058960_b0f291553e.jpg'
+        return image_url
 
-        classifier_response = self.classifier.evaluate_and_predict(user_response)
-        if classifier_response:
-            ph_hint_response = self.ph_hint.generate_hint(obj, question, user_response, ph_hint_history)
-            attempt += 1
-            ph_hint_history_copy = ph_hint_history.copy()
-            ph_hint_history_copy[attempt] = ph_hint_response
-            critic_response = ph_critic.validate(obj, ph_hint_history_copy, question, user_response)
-            if not critic_response[0]:
-                ph_hint_response = self.ph_hint.generate_hint(
-                    obj, question, user_response, ph_hint_history,
-                    ph_hint_response + ' is incorrect because ' + critic_response[1])
-            ph_hint_history[attempt] = ph_hint_response
-            return {'hint_history': ph_hint_history, 'user_history': user_history,
-                    'hint': ph_hint_response, 'evaluation': "incorrect"}
+    def evaluate(self,object,question,question_type,user_response,user_history,hint_reponse,):
+        obj = object
+        q_type=question_type
+        print(user_history)
+        attempt = (max(user_history.keys()) if user_history else 0) + 1
+        ph_hint_history=hint_reponse
+        if len(ph_hint_history)<1:
+            ph_hint_history[attempt]="no hint given till now"
+        user_history[attempt]=user_response
+        classifier_response=self.classifier.evaluate_and_predict(user_response)
+        if classifier_response: #gibbe
+            ph_hint_response=self.ph_hint.generate_hint(obj,question,user_response,ph_hint_history,critic_feedback=None)
+            attempt=attempt+1
+            ph_hint_history_copy=ph_hint_history.copy()
+            ph_hint_history_copy[attempt]=ph_hint_response
+            critic_response=ph_critic.validate(obj,ph_hint_history_copy,question,user_response)
+            if critic_response[0]:
+                ph_hint_response=ph_hint_response
+            else:
+                ph_hint_response=self.ph_hint.generate_hint(obj,question,user_response,ph_hint_history,ph_hint_response + 'is incorrect because ' + critic_response[1])
+                ph_hint_history[attempt]=ph_hint_response
+            response={'hint_history':ph_hint_history, 'user_history':user_history,'hint':ph_hint_response,'evaluation':"incorrect"}
         else:
-            evaluation_json = self.evaluator.evaluate_and_predict(obj, question, q_type, user_response)
+            evaluation_json = self.evaluator.evaluate_and_predict(obj,question, q_type, user_response)
+
             evaluation = extract_json_from_response(evaluation_json)
             evaluation_result = evaluation.get('Evaluation', '').lower()
-            eval_reason = evaluation.get('Reason', '').lower()
+            eval_reason=evaluation.get('Reason', '').lower()
 
-            if evaluation_result != 'correct':
-                ph_hint_response = self.hint_agent.generate_hint(
-                    obj, question, user_response, eval_reason, ph_hint_history)
-                attempt += 1
-                ph_hint_history_copy = ph_hint_history.copy()
-                ph_hint_history_copy[attempt] = ph_hint_response
-                critic_response = hint_v.validate(obj, ph_hint_history, question, user_response)
-                if not critic_response[0]:
-                    ph_hint_response = self.hint_agent.generate_hint(
-                        obj, question, user_response, eval_reason, ph_hint_history,
-                        ph_hint_response + ' is incorrect because ' + critic_response[1])
-                ph_hint_history[attempt] = ph_hint_response
-            else:
-                ph_hint_response = self.hint_agent.generate_hint(
-                    obj, question, user_response, eval_reason, ph_hint_history)
+            if evaluation_result!='correct':
+                ph_hint_response = self.hint_agent.generate_hint(obj,question,user_response,eval_reason,ph_hint_history,critic_feedback=None)
+                attempt=attempt+1
+                ph_hint_history_copy=ph_hint_history.copy()
+                ph_hint_history_copy[attempt]=ph_hint_response
+                critic_response=hint_v.validate(obj,ph_hint_history,question,user_response)
 
-            return {'hint_history': ph_hint_history, 'user_history': user_history,
-                    'hint': ph_hint_response, 'evaluation': evaluation_result}
+                if critic_response[0]:
+                    ph_hint_response=ph_hint_response
+                else:
+                    ph_hint_response=self.hint_agent.generate_hint(obj,question,user_response,eval_reason,ph_hint_history,ph_hint_response + 'is incorrect because ' + critic_response[1])
+                ph_hint_history[attempt]=ph_hint_response
+                response={'hint_history':ph_hint_history, 'user_history':user_history,'hint':ph_hint_response,'evaluation':evaluation_result}
+            elif evaluation_result == 'correct':
+                ph_hint_response = self.hint_agent.generate_hint(obj,question,user_response,eval_reason,ph_hint_history,critic_feedback=None)
+
+                response={'hint_history':ph_hint_history, 'user_history':user_history,'hint':ph_hint_response,'evaluation':evaluation_result}
+        return response
+        

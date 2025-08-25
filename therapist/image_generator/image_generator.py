@@ -5,7 +5,7 @@ import pandas as pd
 from therapist.image_generator.store_embeddings import store_embeddings
 from therapist.image_generator.caption_scorer import caption_scorer
 from therapist.image_generator.caption_generator import CaptionGenerator
-from therapist.image_generator.create_sim_score import SimilarityScorer
+# from therapist.image_generator.create_sim_score import SimilarityScorer
 from therapist.image_generator.helper_functions import *
 
 
@@ -19,7 +19,7 @@ class generate_image:
         self.store_emebddings=store_embeddings(model=self.embedding_model, batch_size=self.batch_size,
                  source_parquet="cc12m_7m_subset_translated.parquet",
                  max_rows=200)
-        self.create_sim_score=SimilarityScorer()
+        # self.create_sim_score=SimilarityScorer()
 
     def generate_image(self,object_name):
         emb_df = self.store_emebddings.generate_embeddings(object_name)
