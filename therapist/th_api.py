@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from therapist.model import generate_therapist
 from typing import Dict
+import asyncio
 
 router = APIRouter()
 therapist = generate_therapist()
@@ -27,15 +28,21 @@ class ValidRequest(BaseModel):
     hint_history: Dict[int, str] = {}  
     
 
-
 @router.post("/exercise_sets")
-def generate_exercise_sets(request: PromptRequest):
-    """
-    Generate therapist-based exercise sets based on patient profile
-    """
+async def generate_exercise_sets(request: PromptRequest):
     try:
-        output = therapist.main(request.age,request.gender,request.location, request.profession, request.language,request.severity)
-
+        loop = asyncio.get_event_loop()
+        output = await loop.run_in_executor(
+            None,
+            lambda: therapist.main(
+                request.age,
+                request.gender,
+                request.location,
+                request.profession,
+                request.language,
+                request.severity,
+            )
+        )
         return {"response": output}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

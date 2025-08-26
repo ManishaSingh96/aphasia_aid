@@ -52,8 +52,8 @@ class generate_therapist:
 
     def _generatequestion(self, object, question_type):
         question = self.question_framer.frame_question_and_hint(object, question_type)
-        # image_url = self.image_gen.generate_image(object) or FALLBACK_IMAGE
-        image_url=FALLBACK_IMAGE
+        image_url = self.image_gen.generate_image(object) or FALLBACK_IMAGE
+        # image_url=FALLBACK_IMAGE
         return {
             "object": object,
             "question": question,
@@ -81,7 +81,7 @@ class generate_therapist:
                 delay *= 1.5
 
     def _generatequestionlist(self, age, gender, location, profession, language, severity,
-                              question_type="naming_from_description", max_workers=16, retries=2):
+                              question_type="naming_from_description", max_workers=4, retries=2):
         raw_output = self.question_agent.generate_questions_for_severity(
             age, gender, location, profession, language, severity
         )
