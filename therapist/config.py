@@ -1,1 +1,1 @@
-url="http://localhost:7878/api/llm/generate"
+url="http://localhost:7879/api/llm/generate"

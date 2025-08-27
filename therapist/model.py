@@ -28,7 +28,7 @@ ph_critic = PhoneticValidatorAgent()
 hint_agent = HintgeneratorAgent()
 hint_v = ValidatorAgent()
 BASE_DIR = Path(__file__).resolve().parent  # folder containing model.py
-parquet_path = BASE_DIR / "therapist" / "image_generator" / "cc12m_7m_subset_translated.parquet"
+parquet_path = BASE_DIR / "image_generator" / "cc12m_7m_subset_translated.parquet"
 
 df = pd.read_parquet(parquet_path) 
 image_gen = generate_image(model='text-embedding-3-large', batch_size=200)
@@ -50,7 +50,7 @@ class generate_therapist:
         self.hint_agent = hint_agent
         self.ph_hint = ph_hint
         self.image_gen = image_gen
-        self.url = "http://localhost:7878/api/llm/generate"
+        self.url = "http://localhost:7879/api/llm/generate"
         self.profiling_log = profiling_log
         self.metrics = {}
 
