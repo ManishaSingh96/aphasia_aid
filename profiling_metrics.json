@@ -1,90 +1,90 @@
 {
-    "generate_question_alarm": {
-        "time_sec": 40.82,
-        "memory_mb": 9190.25
+    "generate_question_plate": {
+        "time_sec": 79.437,
+        "memory_mb": 2461.73
     },
     "parallel_task_0": {
-        "time_sec": 40.852,
-        "memory_mb": 9190.25
-    },
-    "generate_question_soap": {
-        "time_sec": 40.927,
-        "memory_mb": 9190.38
-    },
-    "parallel_task_7": {
-        "time_sec": 40.929,
-        "memory_mb": 9190.38
-    },
-    "generate_question_paste": {
-        "time_sec": 52.535,
-        "memory_mb": 9478.05
-    },
-    "parallel_task_6": {
-        "time_sec": 52.581,
-        "memory_mb": 9478.05
-    },
-    "generate_question_comb": {
-        "time_sec": 54.46,
-        "memory_mb": 9462.05
-    },
-    "parallel_task_9": {
-        "time_sec": 54.639,
-        "memory_mb": 9462.05
-    },
-    "generate_question_pillow": {
-        "time_sec": 55.647,
-        "memory_mb": 9446.09
-    },
-    "parallel_task_2": {
-        "time_sec": 55.896,
-        "memory_mb": 9446.09
-    },
-    "generate_question_blanket": {
-        "time_sec": 56.398,
-        "memory_mb": 9428.09
-    },
-    "parallel_task_3": {
-        "time_sec": 56.724,
-        "memory_mb": 9428.09
-    },
-    "generate_question_toothbrush": {
-        "time_sec": 56.811,
-        "memory_mb": 9401.26
-    },
-    "generate_question_towel": {
-        "time_sec": 56.846,
-        "memory_mb": 9401.26
-    },
-    "parallel_task_5": {
-        "time_sec": 56.848,
-        "memory_mb": 9401.26
-    },
-    "parallel_task_8": {
-        "time_sec": 56.883,
-        "memory_mb": 9384.26
-    },
-    "generate_question_bed": {
-        "time_sec": 56.914,
-        "memory_mb": 9384.26
-    },
-    "parallel_task_1": {
-        "time_sec": 56.914,
-        "memory_mb": 9383.26
+        "time_sec": 79.438,
+        "memory_mb": 2461.75
     },
     "generate_question_water": {
-        "time_sec": 58.142,
-        "memory_mb": 9369.26
+        "time_sec": 80.074,
+        "memory_mb": 2049.69
     },
     "parallel_task_4": {
-        "time_sec": 58.142,
-        "memory_mb": 9369.26
+        "time_sec": 80.074,
+        "memory_mb": 2049.69
+    },
+    "generate_question_fork": {
+        "time_sec": 112.532,
+        "memory_mb": 806.91
+    },
+    "parallel_task_3": {
+        "time_sec": 112.532,
+        "memory_mb": 806.97
+    },
+    "generate_question_knife": {
+        "time_sec": 112.567,
+        "memory_mb": 808.05
+    },
+    "parallel_task_5": {
+        "time_sec": 112.567,
+        "memory_mb": 808.05
+    },
+    "generate_question_bowl": {
+        "time_sec": 115.242,
+        "memory_mb": 731.19
+    },
+    "parallel_task_6": {
+        "time_sec": 115.242,
+        "memory_mb": 731.19
+    },
+    "generate_question_cup": {
+        "time_sec": 115.356,
+        "memory_mb": 722.48
+    },
+    "parallel_task_1": {
+        "time_sec": 115.356,
+        "memory_mb": 722.48
+    },
+    "generate_question_food": {
+        "time_sec": 118.078,
+        "memory_mb": 741.86
+    },
+    "parallel_task_7": {
+        "time_sec": 118.079,
+        "memory_mb": 741.86
+    },
+    "generate_question_table": {
+        "time_sec": 118.311,
+        "memory_mb": 728.94
+    },
+    "parallel_task_8": {
+        "time_sec": 118.311,
+        "memory_mb": 728.94
+    },
+    "generate_question_salt": {
+        "time_sec": 118.593,
+        "memory_mb": 710.2
+    },
+    "parallel_task_9": {
+        "time_sec": 118.593,
+        "memory_mb": 710.2
+    },
+    "generate_question_spoon": {
+        "time_sec": 118.786,
+        "memory_mb": 674.7
+    },
+    "parallel_task_2": {
+        "time_sec": 118.786,
+        "memory_mb": 674.7
     },
     "generate_question_list": {
-        "time_sec": 64.455,
-        "memory_mb": 9224.23
+        "time_sec": 120.544,
+        "memory_mb": 670.03
     },
     "main_execution": {
-        "time_sec": 64.455,
-        "memory_mb": 9221.17
+        "time_sec": 120.545,
+        "memory_mb": 670.11
     }
 }

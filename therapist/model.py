@@ -5,6 +5,8 @@ import psutil
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
+
+from pathlib import Path
 from therapist.conversation_generator.question_generator import QuestionGeneratorAgent
 from therapist.conversation_generator.phonetic_hint_agent import PhoneticHintAgent
 from therapist.conversation_generator.classifier_agent import ClassifierAgent
@@ -25,7 +27,10 @@ question_framer = QuestionFramingAgent()
 ph_critic = PhoneticValidatorAgent()
 hint_agent = HintgeneratorAgent()
 hint_v = ValidatorAgent()
-df = pd.read_parquet('/home/jayant/Desktop/sam/manisha/aphasia_aid/therapist/image_generator/cc12m_7m_subset_translated.parquet')
+BASE_DIR = Path(__file__).resolve().parent  # folder containing model.py
+parquet_path = BASE_DIR / "therapist" / "image_generator" / "cc12m_7m_subset_translated.parquet"
+
+df = pd.read_parquet(parquet_path) 
 image_gen = generate_image(model='text-embedding-3-large', batch_size=200)
 
 FALLBACK_IMAGE = "http://static.flickr.com/2723/4385058960_b0f291553e.jpg"
