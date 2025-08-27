@@ -2,7 +2,7 @@ import openai
 import os
 
 class OpenAITextGenerator:
-    def __init__(self, model_name="gpt-4o"):
+    def __init__(self, model_name="gpt-4o-mini"):
         self.api_key = os.getenv("OPENAI_API_KEY")  # Load from env variable
         self.model_name = model_name
 

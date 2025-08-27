@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from therapist.model import generate_therapist
 from typing import Dict
 import asyncio
-
+from time import time
 router = APIRouter()
 therapist = generate_therapist()
 
@@ -31,7 +31,9 @@ class ValidRequest(BaseModel):
 @router.post("/exercise_sets")
 async def generate_exercise_sets(request: PromptRequest):
     try:
+    
         loop = asyncio.get_event_loop()
+        start=time()
         output = await loop.run_in_executor(
             None,
             lambda: therapist.main(
@@ -43,7 +45,7 @@ async def generate_exercise_sets(request: PromptRequest):
                 request.severity,
             )
         )
-        return {"response": output}
+        return {"response": output, "time": time()-start}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     

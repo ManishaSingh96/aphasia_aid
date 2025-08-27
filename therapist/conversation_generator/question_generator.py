@@ -55,6 +55,7 @@ class QuestionGeneratorAgent:
         Returns a parsed dict (JSON) with keys: object_list, question_list.
         """
         chosen_theme = self._pick_theme(severity)
+        print('checkpoint: 1 : ', chosen_theme)
         raw = self.generate_question(age,gender,location,profession,severity,chosen_theme)
         return safe_parse_json(raw)
 

@@ -17,12 +17,12 @@ class generate_image:
         self.scorer = caption_scorer()
         self.caption_generator=CaptionGenerator()
         self.store_emebddings=store_embeddings(model=self.embedding_model, batch_size=self.batch_size,
-                 source_parquet="cc12m_7m_subset_translated.parquet",
+                 
                  max_rows=200)
         # self.create_sim_score=SimilarityScorer()
 
-    def generate_image(self,object_name):
-        emb_df = self.store_emebddings.generate_embeddings(object_name)
+    def generate_image(self,object_name,df):
+        emb_df = self.store_emebddings.generate_embeddings(object_name,df)
         captions=self.caption_generator.generate_positive_and_negative_captions(object_name)
         print("captions ",captions)
         scored_df = self.scorer.score_embeddings_df_with_pos_neg(emb_df, captions=captions, model=self.embedding_model)
