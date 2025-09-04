@@ -2,11 +2,11 @@ import os
 import sys
 import pandas as pd
 
-from therapist.image_generator.store_embeddings import store_embeddings
-from therapist.image_generator.caption_scorer import caption_scorer
-from therapist.image_generator.caption_generator import CaptionGenerator
+from store_embeddings import store_embeddings
+from caption_scorer import caption_scorer
+from caption_generator import CaptionGenerator
 # from therapist.image_generator.create_sim_score import SimilarityScorer
-from therapist.image_generator.helper_functions import *
+from helper_functions import *
 
 
 
@@ -17,8 +17,8 @@ class generate_image:
         self.scorer = caption_scorer()
         self.caption_generator=CaptionGenerator()
         self.store_emebddings=store_embeddings(model=self.embedding_model, batch_size=self.batch_size,
-                 source_parquet="cc12m_7m_subset_translated.parquet",
-                 max_rows=200)
+                source_parquet="cc12m_7m_subset_translated.parquet",
+                max_rows=1000)
         # self.create_sim_score=SimilarityScorer()
 
     def generate_image(self,object_name):
@@ -35,14 +35,14 @@ class generate_image:
         # print("url")
         # print(top_caption['url'])
         # print("aa")
-        
+        scored_df.to_csv(f'scored_df_{object_name}.csv')
         img_url=top_caption['url'].iloc[0]
 
         return img_url
     
 if __name__ == "__main__":
     img=generate_image(model='text-embedding-3-large',batch_size=100)
-    top_caption=img.generate_image(object_name='window')
+    top_caption=img.generate_image(object_name='eggs')
         
 
 

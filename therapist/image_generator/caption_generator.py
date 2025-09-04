@@ -1,109 +1,46 @@
 
 import httpx
-from therapist.utils import safe_parse_json,clean_json
-from therapist.config import url
+from utils import safe_parse_json,clean_json
+# from therapist.config import url
+import os
+import openai
 import json
 class CaptionGenerator:
     def __init__(self):
-        pass
+        openai.api_key=os.getenv("OPENAI_API_KEY") 
     def generate_positive_and_negative_captions(self, object_name):
-        system_prompt = """
-        You are a caption generator that generates suitable captions for flashcard style images 
-        used in naming from description exercise for speech therapy.
 
-        """
-                
+        user_prompt = """
+        You are a regex pattern generator that BLACKLISTS captions unsuitable for flashcard-style image generation from a large (CLIP) dataset.
 
-        user_prompt = f"""
-        INPUT:
-        TARGET_OBJECT: {object_name}
+        Task:
+        Given a **target object**, think carefully and broadly about what makes a caption NON-suitable for a clean, single-object flashcard image of that object. Then produce a list of Python-compatible, plural-aware regex patterns that MATCH such non-suitable captions so they can be excluded.
 
-        TASK:
-        1. Generate 10 **positive captions** that describe the TARGET_OBJECT in a descriptive, textbook/flashcard style.
-        - Captions should be short.
-        - Only the object itself should be described (no people, no extra objects).
-        - Assume a plain or neutral background.
-        - Use the most common and simple variants of the object.
+        Think for yourself (do not list your reasoning). Consider how real captions in a web-scale dataset are written and what signals that the image is NOT a plain, isolated, real-life depiction of the target object.
 
-        2. Generate 10 **negative captions** that are unsuitable for textbook/flashcard style.
-        - These may include people, other objects, or uncommon/novel variants.
-        - Examples: object being used by people, in busy scenes, branded versions, or as part of a recipe.
+        Key constraints to internalize BEFORE writing patterns:
+        - Flashcard suitability means a single, real-life object on a plain/neutral background, minimal wording, no extra objects or scene context.
+        - Non-suitable captions include (but are not limited to): multiple or unrelated objects; scene/place/furniture context; people/animals; brand/logos/metadata; numbers/IDs/URLs/hashtags; artistic/illustrated renders; and non-real forms/derivatives (e.g., “apple pie”, “iPhone Apple logo”, “egg bhurji”, “blue/golden eggs”, “vector towel”).
+        - For each pattern, ensure the object is referenced in SINGULAR or PLURAL (use `objects?` form for plural awareness).
 
-        OUTPUT FORMAT:
-        Return **strict JSON only**, with the following structure and no extra text, no markdown, no trailing commas:
+        Regex requirements:
+        - Use `\\b` for word boundaries and `.*` for flexible gaps.
+        - Use plural-aware forms of the target object, i.e., `\\b{{OBJ}}s?\\b` where `{{OBJ}}` is the singular lemma.
+        - Prefer concise patterns that generalize; include both object-first and context-first variants where helpful.
+        - Escape backslashes for JSON and Python compatibility (double backslashes).
+        - Do NOT output explanations—only JSON with the patterns.
 
-        {{
-        "positive_captions": [
-            "caption text 1",
-            "caption text 2",
-            ...
-            "caption text 10"
-        ],
-        "negative_captions": [
-            "caption text 1",
-            "caption text 2",
-            ...
-            "caption text 10"
-        ]
-        }}
+Output format (JSON only):
+{
+  "NEGATIVE_PATTERNS": [
+    "pattern_1",
+    "pattern_2",
+    ...
+  ]
+}
 
-        FEW-SHOT EXAMPLES:
+Now, infer and return a diverse set of negative regex patterns that match captions you consider NON-suitable for a flashcard-style image of this object. Output only the JSON.
 
-        TARGET_OBJECT: Apple
-        {{
-        "positive_captions": [
-            "A red apple with green leaves",
-            "A red apple with green stem",
-            "A whole green apple",
-            "A single apple on plain background",
-            "A shiny red apple",
-            "A plain yellow apple",
-            "A ripe apple on white background",
-            "A fresh apple with smooth skin",
-            "A single apple centered in frame",
-            "A clean red apple with stem"
-        ],
-        "negative_captions": [
-            "Apple pie on a plate",
-            "Apple wine in a glass",
-            "Girl plucking apple from tree",
-            "A hand holding an Apple phone",
-            "A basket filled with apples",
-            "An apple orchard with many trees",
-            "Cut apple slices on a plate",
-            "Caramel apple on a stick",
-            "Apple with chocolate topping",
-            "Apple logo on a laptop"
-        ]
-        }}
-
-        TARGET_OBJECT: Towel
-        {{
-        "positive_captions": [
-            "A plain white towel",
-            "A folded towel",
-            "A towel hanging on a hook",
-            "A rolled towel",
-            "A clean bath towel",
-            "A hand towel on plain background",
-            "A grey towel folded neatly",
-            "A stack of white towels",
-            "A striped towel on plain background",
-            "A single towel centered in frame"
-        ],
-        "negative_captions": [
-            "A girl wearing a towel on the beach",
-            "A man drying with a towel",
-            "A towel with cartoon characters",
-            "Towel on hotel bed with flowers",
-            "A dog wrapped in a towel",
-            "A towel rack in a bathroom",
-            "A towel with brand logo",
-            "Two people sharing a towel",
-            "A branded towel displayed in a store",
-            "A towel used in a beach party"
-        ]
-        }}
 
         """
         # response = openai.ChatCompletion.create(
@@ -111,22 +48,24 @@ class CaptionGenerator:
         #     messages=[{"role": "user", "content": prompt}]
         # )
         messages = [
-                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
+                {"role": "user", "content": f"""
+                 Target Object: {object_name}"""}
             ]
         
-        # response = openai.ChatCompletion.create(
-        #     model="gpt-4o",
-        #     messages=messages
-        # )
-        response = httpx.post(
-                url,
-                json={"input_text": messages},
-                timeout=60
-            )
-        response.raise_for_status()
-        data=response.json()["response"]
-        content=clean_json(data)
+        response = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            temperature=.1
+        )
+        # response = httpx.post(
+        #         url,
+        #         json={"input_text": messages},
+        #         timeout=60
+        #     )
+        # response.raise_for_status()
+        response=response.choices[0].message.content.strip()
+        content=clean_json(response)
         print(content)
         content=json.loads(content)
 
@@ -139,4 +78,8 @@ class CaptionGenerator:
         # content = response.json()["response"]
         # print(content, ' inside framer')
         return content
+    
+if __name__ == "__main__":
+    img=CaptionGenerator()
+    top_caption=img.generate_positive_and_negative_captions(object_name='towel')
     

@@ -57,8 +57,8 @@ class caption_scorer:
                 vec = json.loads(vec)
             pos_sims_list = [self._cosine_sim(vec, pe) for pe in pos_embs] if pos_embs else [0.0]
             neg_sims_list = [self._cosine_sim(vec, ne) for ne in neg_embs] if neg_embs else [0.0]
-            pos_max = max(pos_sims_list) if pos_sims_list else 0.0
-            neg_max = max(neg_sims_list) if neg_sims_list else 0.0
+            pos_max = sum(pos_sims_list) if pos_sims_list else 0.0
+            neg_max = sum(neg_sims_list) if neg_sims_list else 0.0
             row_out = {
                 "caption": row["caption"],
                 "pos_sims": float(pos_max),

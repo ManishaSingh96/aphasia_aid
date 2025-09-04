@@ -3,8 +3,8 @@
 import os
 import pandas as pd
 from pathlib import Path
-from therapist.image_generator.create_embeddings import embed_captions_df
-from therapist.image_generator.helper_functions import *
+from create_embeddings import embed_captions_df
+from helper_functions import *
 
 
 def chunk_df(df, size):
@@ -14,7 +14,7 @@ def chunk_df(df, size):
 class store_embeddings:
     def __init__(self, model, batch_size,
                  source_parquet="cc12m_7m_subset_translated.parquet",
-                 max_rows=200,
+                 max_rows=1000,
                  emb_dir="embeddings"):
         self.embedding_model = model
         self.batch_size = batch_size
@@ -43,21 +43,21 @@ class store_embeddings:
             return pd.DataFrame()
 
         filtered_df = filtered_df.iloc[: self.max_rows, :]
-        chunks = chunk_df(filtered_df, self.batch_size)
+        # chunks = chunk_df(filtered_df, self.batch_size)
 
-        results = []
-        for chunk in chunks:
-            try:
-                result = embed_captions_df(chunk, model=self.embedding_model, batch_size=len(chunk))
-                results.append(result)
-            except Exception as e:
-                print(f"Embedding failed for a batch: {e}")
+        # results = []
+        # for chunk in chunks:
+        try:
+            result = embed_captions_df(filtered_df, model=self.embedding_model, batch_size=500)
+                
+        except Exception as e:
+            print(f"Embedding failed for a batch: {e}")
 
-        if not results:
+        if result is None:
             raise RuntimeError("All embedding batches failed.")
 
-        emb_df = pd.concat(results).reset_index(drop=True)
-
+        # emb_df = pd.concat(result).reset_index(drop=True)
+        emb_df=result
         if "embedding" not in emb_df.columns:
             raise ValueError("embed_captions_df must return a column named 'embedding'.")
 
