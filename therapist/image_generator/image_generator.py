@@ -52,13 +52,11 @@ class generate_image:
         )
 
         sim_score_df = self.create_sim_score.score_dataframe_with_image(top_caption, target_caption)
-        sim_score_df.to_csv('sim_score_df.csv')
-        # best candidate
         best_row = sim_score_df.sort_values("sim_score_image", ascending=False).iloc[0]
         top_img_caption = best_row["caption"]
         top_img_url = best_row["url"]
         top_img_sim_score = float(best_row["sim_score_image"])
-
+        sim_score_df.to_csv(f"sim_score_df_{object_name}.csv")
         # Check metadata and update if necessary
         if object_name not in self.metadata:
             self.metadata[object_name] = {
@@ -66,7 +64,7 @@ class generate_image:
                 "url": top_img_url,
                 "sim_score": top_img_sim_score,
             }
-            print(f"✅ Added new object '{object_name}' to metadata")
+            
         else:
             existing_score = self.metadata[object_name]["sim_score"]
             if top_img_sim_score > existing_score:
@@ -75,14 +73,14 @@ class generate_image:
                     "url": top_img_url,
                     "sim_score": top_img_sim_score,
                 }
-                print(f"🔄 Updated object '{object_name}' with higher sim_score ({top_img_sim_score:.4f})")
+                
             else:
                 print(f"⏩ Kept existing entry for '{object_name}' (score {existing_score:.4f} >= {top_img_sim_score:.4f})")
 
         # Save changes to JSON
         self._save_metadata()
 
-        return self.metadata[object_name]  # return best entry
+        return self.metadata[object_name] ['url'] # return best entry
 
 
 if __name__ == "__main__":

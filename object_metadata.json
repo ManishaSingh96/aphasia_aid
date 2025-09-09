@@ -18,5 +18,70 @@
         "caption": "ripe bananas on a white background",
         "url": "http://l7.alamy.com/zooms/6233c08d2155490f9dfa619bff7920ee/a-bunch-of-imperfect-bananas-in-a-white-high-key-background-c2cce1.jpg",
         "sim_score": 0.5
+    },
+    "carrot": {
+        "caption": "a carrot, half of the whole, cut and peeled into small pieces vector illustration isolated on white background royalty",
+        "url": "https://thumbs.dreamstime.com/b/still-life-carrot-vector-illustration-whole-sliced-vegetable-composition-roots-130685442.jpg",
+        "sim_score": 0.33625084161758423
+    },
+    "towel": {
+        "caption": "a white folded towel is on top of a bed",
+        "url": "http://static.flickr.com/2491/3938438234_9f8d629983.jpg",
+        "sim_score": 0.32938438653945923
+    },
+    "comb": {
+        "caption": "scissors and comb",
+        "url": "https://thumb1.shutterstock.com/display_pic_with_logo/3304778/354652604/stock-vector-scissors-and-comb-a-strand-of-hair-icon-354652604.jpg",
+        "sim_score": 0.3133154809474945
+    },
+    "bed": {
+        "caption": "a white bed in a bedroom in front of the window",
+        "url": "https://thumb1.shutterstock.com/display_pic_with_logo/544783/116201407/stock-photo-interior-shot-of-a-modern-bedroom-116201407.jpg",
+        "sim_score": 0.3401066064834595
+    },
+    "toothbrush": {
+        "caption": "green toothbrush on white background",
+        "url": "https://thumb9.shutterstock.com/display_pic_with_logo/877822/465213842/stock-photo-plastic-green-toothbrush-isolated-over-the-white-background-465213842.jpg",
+        "sim_score": 0.36274266242980957
+    },
+    "soap": {
+        "caption": "an empty soap on a white background",
+        "url": "https://media1.popsugar-assets.com/files/thumbor/jG3Cka010nZU6lCj-xizdXwPeuM/fit-in/1024x1024/filters:format_auto-!!-:strip_icc-!!-/2016/08/29/738/n/1922153/c62dbc01a21858ff__9850769/i/Chanel-N5-Bath-Soap.jpg",
+        "sim_score": 0.4
+    },
+    "mirror": {
+        "caption": "a silver mirror with an ornate frame",
+        "url": "https://i.pinimg.com/736x/34/1f/62/341f627249dcd998970e458a8ef65e40--ornate-mirror-mirrors-online.jpg",
+        "sim_score": 0.3096417784690857
+    },
+    "shoes": {
+        "caption": "a pair of white and red shoes on wooden floor",
+        "url": "http://l7.alamy.com/zooms/8ae007c7dc4447a8b613cf1b3920a8ed/a-pair-of-small-red-baby-converse-shoes-on-a-wooden-floor-e0c0ty.jpg",
+        "sim_score": 0.3001737594604492
+    },
+    "alarm": {
+        "caption": "an alarm clock on white background",
+        "url": "http://l7.alamy.com/zooms/8d6daffeb5354af4898d590d9e90cf5a/traditional-alarm-clock-isolated-on-a-white-studio-background-ba5g32.jpg",
+        "sim_score": 0.5
+    },
+    "alarm clock": {
+        "caption": "an alarm clock on white background",
+        "url": "http://l7.alamy.com/zooms/8d6daffeb5354af4898d590d9e90cf5a/traditional-alarm-clock-isolated-on-a-white-studio-background-ba5g32.jpg",
+        "sim_score": 0.5
+    },
+    "water": {
+        "caption": "a glass of water",
+        "url": "http://1000awesomethings.files.wordpress.com/2008/10/glass.jpg",
+        "sim_score": 0.4
+    },
+    "clothes": {
+        "caption": "an assortment of fashionable clothes, accessories, with a white space in the middle",
+        "url": "https://thumb7.shutterstock.com/display_pic_with_logo/175231532/780196105/stock-photo-decorative-draping-frame-of-the-textile-women-accessories-scarf-pink-pattern-british-flag-beads-780196105.jpg",
+        "sim_score": 0.30825304985046387
+    },
+    "apple": {
+        "caption": "red apple with leaf on a white background",
+        "url": "https://thumb1.shutterstock.com/display_pic_with_logo/2385806/227138908/stock-photo-an-fresh-apple-with-leaf-isolated-on-white-background-227138908.jpg",
+        "sim_score": 0.348
     }
 }

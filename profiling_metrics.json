@@ -1,90 +1,94 @@
 {
-    "generate_question_bed": {
-        "time_sec": 27.198,
-        "memory_mb": 9128.59
+    "test_evaluator": {
+        "time_sec": 25.686,
+        "memory_mb": 1713.78
     },
-    "parallel_task_0": {
-        "time_sec": 27.321,
-        "memory_mb": 9128.59
-    },
-    "generate_question_water": {
-        "time_sec": 27.631,
-        "memory_mb": 9145.46
+    "generate_question_toran": {
+        "time_sec": 101.933,
+        "memory_mb": 1545.88
     },
     "parallel_task_2": {
-        "time_sec": 27.734,
-        "memory_mb": 9145.46
+        "time_sec": 101.933,
+        "memory_mb": 1545.91
     },
-    "generate_question_towel": {
-        "time_sec": 30.457,
-        "memory_mb": 9149.14
-    },
-    "parallel_task_5": {
-        "time_sec": 30.625,
-        "memory_mb": 9149.14
-    },
-    "generate_question_soap": {
-        "time_sec": 31.314,
-        "memory_mb": 9149.14
-    },
-    "parallel_task_4": {
-        "time_sec": 31.386,
-        "memory_mb": 9149.14
-    },
-    "generate_question_comb": {
-        "time_sec": 31.363,
-        "memory_mb": 9149.14
-    },
-    "generate_question_toothbrush": {
-        "time_sec": 31.428,
-        "memory_mb": 9149.14
-    },
-    "parallel_task_3": {
-        "time_sec": 31.428,
-        "memory_mb": 9149.14
-    },
-    "parallel_task_9": {
-        "time_sec": 31.383,
-        "memory_mb": 9149.14
-    },
-    "generate_question_alarm": {
-        "time_sec": 31.468,
-        "memory_mb": 9149.14
-    },
-    "parallel_task_1": {
-        "time_sec": 31.468,
-        "memory_mb": 9149.14
-    },
-    "generate_question_mirror": {
-        "time_sec": 35.227,
-        "memory_mb": 9173.64
-    },
-    "parallel_task_6": {
-        "time_sec": 35.227,
-        "memory_mb": 9173.64
-    },
-    "generate_question_clothes": {
-        "time_sec": 36.864,
-        "memory_mb": 9161.8
+    "generate_question_table": {
+        "time_sec": 103.6,
+        "memory_mb": 987.0
     },
     "parallel_task_7": {
-        "time_sec": 36.864,
-        "memory_mb": 9161.8
+        "time_sec": 103.6,
+        "memory_mb": 987.02
     },
-    "generate_question_shoes": {
-        "time_sec": 39.254,
-        "memory_mb": 9154.85
+    "generate_question_diya": {
+        "time_sec": 108.654,
+        "memory_mb": 977.44
+    },
+    "parallel_task_1": {
+        "time_sec": 108.654,
+        "memory_mb": 977.47
+    },
+    "generate_question_lantern": {
+        "time_sec": 199.897,
+        "memory_mb": 1430.02
+    },
+    "parallel_task_6": {
+        "time_sec": 199.898,
+        "memory_mb": 1430.05
+    },
+    "generate_question_flower": {
+        "time_sec": 207.863,
+        "memory_mb": 1311.0
+    },
+    "parallel_task_3": {
+        "time_sec": 207.863,
+        "memory_mb": 1311.0
+    },
+    "generate_question_candles": {
+        "time_sec": 208.954,
+        "memory_mb": 1421.33
+    },
+    "parallel_task_4": {
+        "time_sec": 208.954,
+        "memory_mb": 1421.33
+    },
+    "generate_question_decorations": {
+        "time_sec": 216.144,
+        "memory_mb": 1411.55
+    },
+    "parallel_task_5": {
+        "time_sec": 216.144,
+        "memory_mb": 1411.55
+    },
+    "generate_question_rangoli": {
+        "time_sec": 237.052,
+        "memory_mb": 831.2
+    },
+    "parallel_task_0": {
+        "time_sec": 237.052,
+        "memory_mb": 831.22
+    },
+    "generate_question_painting": {
+        "time_sec": 338.436,
+        "memory_mb": 1043.77
+    },
+    "parallel_task_9": {
+        "time_sec": 338.436,
+        "memory_mb": 1043.8
+    },
+    "generate_question_wall": {
+        "time_sec": 352.325,
+        "memory_mb": 1037.33
     },
     "parallel_task_8": {
-        "time_sec": 39.254,
-        "memory_mb": 9154.85
+        "time_sec": 352.325,
+        "memory_mb": 1037.33
     },
     "generate_question_list": {
-        "time_sec": 41.533,
-        "memory_mb": 9113.79
+        "time_sec": 353.811,
+        "memory_mb": 1039.81
     },
     "main_execution": {
-        "time_sec": 41.534,
-        "memory_mb": 9113.75
+        "time_sec": 353.811,
+        "memory_mb": 1039.78
     }
 }

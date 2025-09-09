@@ -88,5 +88,4 @@ class SimilarityScorer:
         out_df = df.copy()
         out_df["sim_score_image"] = sim_scores
         out_df["clip_logit_image"] = logit_scores
-        print("done")
         return out_df
