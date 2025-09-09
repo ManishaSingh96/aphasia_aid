@@ -56,7 +56,6 @@ class generate_image:
         top_img_caption = best_row["caption"]
         top_img_url = best_row["url"]
         top_img_sim_score = float(best_row["sim_score_image"])
-        sim_score_df.to_csv(f"sim_score_df_{object_name}.csv")
         # Check metadata and update if necessary
         if object_name not in self.metadata:
             self.metadata[object_name] = {
