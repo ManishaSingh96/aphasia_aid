@@ -4,6 +4,8 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from therapist.image_generator.create_embeddings import embed_captions_df
 from therapist.image_generator.helper_functions import *
+from therapist.image_generator.negative_pattern_generator import PatternGenerator
+import re
 
 def chunk_df(df, size):
     return [df.iloc[i:i + size] for i in range(0, len(df), size)]
@@ -14,7 +16,7 @@ class store_embeddings:
         model,
         batch_size,
         # source_parquet="cc12m_7m_subset_translated.parquet",
-        max_rows=200,
+        max_rows=5000,
         emb_dir="embeddings"
     ):
         self.embedding_model = model
@@ -22,6 +24,7 @@ class store_embeddings:
         # self.source_parquet = str(Path(__file__).parent / source_parquet)
         self.max_rows = max_rows
         self.emb_dir = emb_dir
+        self.cc=PatternGenerator()
         os.makedirs(self.emb_dir, exist_ok=True)
 
     def _process_chunk(self, chunk):
@@ -40,54 +43,56 @@ class store_embeddings:
             print(f"Found existing embeddings: {emb_path}")
             return pd.read_parquet(emb_path)
 
-        # Ensure source parquet exists
-        # if not os.path.exists(self.source_parquet):
-        #     raise FileNotFoundError(f"Source parquet not found: {self.source_parquet}")
-
-        # Load and filter
-        # df = pd.read_parquet(self.source_parquet)
         filtered_df = filter_df_with_object(df, object_name)
-        print(f"Filtered rows for '{object_name}': {len(filtered_df)}")
-
-        # Drop large df to free memory
+        print(f"Filtered rows for '{object_name}': {len(filtered_df)}") 
+        
         del df  
-
-        # Handle empty case
         if filtered_df.empty:
             print("No rows after filtering. Exiting.")
             return pd.DataFrame()
 
-        # Limit rows for safety
         filtered_df = filtered_df.iloc[: self.max_rows, :]
+        filtered_df["token_length"] = filtered_df["caption"].fillna("").astype(str).str.split().map(len)
+        filtered_df = filtered_df[filtered_df["token_length"] <= 20]
+        print(f"Remaining after token length filter: {len(filtered_df)}")
+        NEGATIVE_PATTERNS = self.cc.generate_negative_patterns(object_name)['NEGATIVE_PATTERNS']
+        print(NEGATIVE_PATTERNS)
+        def has_negative_pattern(caption):
+            for pattern in NEGATIVE_PATTERNS:
+                # print(pattern)
+                if re.search(pattern, caption.lower()):
+                    return True
+            return False
+
+        # Step 4: Remove captions with negative patterns
+        filtered_df = filtered_df[~filtered_df["caption"].apply(has_negative_pattern)]
+        print(f"Remaining after regex pattern filtering: {len(filtered_df)}")
         chunks = chunk_df(filtered_df, self.batch_size)
 
-        # Free filtered_df from memory as well
-        del filtered_df  
+         
+        emb_df=embed_captions_df(filtered_df, model=self.embedding_model, batch_size=200)
+        del filtered_df 
+        # results = []
 
-        results = []
+        # if self.batch_size < 20:
+        #     max_workers = min(8, len(chunks))  # cap threads for safety
+        #     with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        #         futures = {executor.submit(self._process_chunk, chunk): chunk for chunk in chunks}
+        #         for future in as_completed(futures):
+        #             result = future.result()
+        #             if result is not None:
+        #                 results.append(result)
+        # else:
+        #     for chunk in chunks:
+        #         result = self._process_chunk(chunk)
+        #         if result is not None:
+        #             results.append(result)
 
-        # If batch size < 20 → parallel processing
-        if self.batch_size < 20:
-            max_workers = min(8, len(chunks))  # cap threads for safety
-            with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                futures = {executor.submit(self._process_chunk, chunk): chunk for chunk in chunks}
-                for future in as_completed(futures):
-                    result = future.result()
-                    if result is not None:
-                        results.append(result)
-        else:
-            # Sequential processing for large batches
-            for chunk in chunks:
-                result = self._process_chunk(chunk)
-                if result is not None:
-                    results.append(result)
+        # if not results:
+        #     raise RuntimeError("All embedding batches failed.")
 
-        # If no embeddings were successfully generated
-        if not results:
-            raise RuntimeError("All embedding batches failed.")
-
-        # Combine results
-        emb_df = pd.concat(results).reset_index(drop=True)
+        # # Combine results
+        # emb_df = pd.concat(results).reset_index(drop=True)
 
         # Ensure embedding column exists
         if "embedding" not in emb_df.columns:

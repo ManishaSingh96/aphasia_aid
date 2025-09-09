@@ -1,0 +1,22 @@
+{
+    "cup": {
+        "caption": "red cup of coffee on a saucer",
+        "url": "https://thumb7.shutterstock.com/display_pic_with_logo/650527/162699641/stock-photo-coffee-cup-on-saucer-on-a-white-background-162699641.jpg",
+        "sim_score": 0.5
+    },
+    "broom": {
+        "caption": "broom in the shape of a flower on a white background stock photos",
+        "url": "https://thumbs.dreamstime.com/b/broom-isolated-white-background-21021205.jpg",
+        "sim_score": 0.34834471344947815
+    },
+    "plate": {
+        "caption": "empty white plate with blue stripes stock photos",
+        "url": "https://thumbs.dreamstime.com/b/white-blue-empty-ceramic-plate-top-view-isolated-white-blue-empty-ceramic-plate-top-view-isolated-object-131697334.jpg",
+        "sim_score": 0.34849658608436584
+    },
+    "banana": {
+        "caption": "ripe bananas on a white background",
+        "url": "http://l7.alamy.com/zooms/6233c08d2155490f9dfa619bff7920ee/a-bunch-of-imperfect-bananas-in-a-white-high-key-background-c2cce1.jpg",
+        "sim_score": 0.5
+    }
+}
