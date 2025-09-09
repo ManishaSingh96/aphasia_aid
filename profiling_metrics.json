@@ -1,90 +1,402 @@
 {
     "generate_question_bed": {
-        "time_sec": 27.198,
-        "memory_mb": 9128.59
+        "time_sec": 23.155,
+        "memory_mb": 9247.98
     },
     "parallel_task_0": {
-        "time_sec": 27.321,
-        "memory_mb": 9128.59
+        "time_sec": 28.726,
+        "memory_mb": 9346.4
     },
     "generate_question_water": {
-        "time_sec": 27.631,
-        "memory_mb": 9145.46
+        "time_sec": 27.114,
+        "memory_mb": 9247.98
     },
     "parallel_task_2": {
-        "time_sec": 27.734,
-        "memory_mb": 9145.46
+        "time_sec": 29.893,
+        "memory_mb": 9346.4
     },
     "generate_question_towel": {
-        "time_sec": 30.457,
-        "memory_mb": 9149.14
+        "time_sec": 29.755,
+        "memory_mb": 9247.98
     },
     "parallel_task_5": {
-        "time_sec": 30.625,
-        "memory_mb": 9149.14
+        "time_sec": 29.896,
+        "memory_mb": 9346.4
     },
     "generate_question_soap": {
-        "time_sec": 31.314,
-        "memory_mb": 9149.14
+        "time_sec": 28.842,
+        "memory_mb": 9247.98
     },
     "parallel_task_4": {
-        "time_sec": 31.386,
-        "memory_mb": 9149.14
+        "time_sec": 29.672,
+        "memory_mb": 9346.4
     },
     "generate_question_comb": {
-        "time_sec": 31.363,
-        "memory_mb": 9149.14
+        "time_sec": 25.897,
+        "memory_mb": 9268.15
     },
     "generate_question_toothbrush": {
         "time_sec": 31.428,
         "memory_mb": 9149.14
     },
     "parallel_task_3": {
-        "time_sec": 31.428,
-        "memory_mb": 9149.14
+        "time_sec": 29.897,
+        "memory_mb": 9346.4
     },
     "parallel_task_9": {
-        "time_sec": 31.383,
-        "memory_mb": 9149.14
+        "time_sec": 35.767,
+        "memory_mb": 9346.4
     },
     "generate_question_alarm": {
-        "time_sec": 31.468,
-        "memory_mb": 9149.14
+        "time_sec": 30.639,
+        "memory_mb": 9268.15
     },
     "parallel_task_1": {
-        "time_sec": 31.468,
-        "memory_mb": 9149.14
+        "time_sec": 35.619,
+        "memory_mb": 9346.4
     },
     "generate_question_mirror": {
-        "time_sec": 35.227,
-        "memory_mb": 9173.64
+        "time_sec": 29.276,
+        "memory_mb": 9247.98
     },
     "parallel_task_6": {
-        "time_sec": 35.227,
-        "memory_mb": 9173.64
+        "time_sec": 30.446,
+        "memory_mb": 9346.4
     },
     "generate_question_clothes": {
-        "time_sec": 36.864,
-        "memory_mb": 9161.8
+        "time_sec": 31.311,
+        "memory_mb": 9267.17
     },
     "parallel_task_7": {
-        "time_sec": 36.864,
-        "memory_mb": 9161.8
+        "time_sec": 24.444,
+        "memory_mb": 9343.55
     },
     "generate_question_shoes": {
-        "time_sec": 39.254,
-        "memory_mb": 9154.85
+        "time_sec": 28.45,
+        "memory_mb": 9247.98
     },
     "parallel_task_8": {
-        "time_sec": 39.254,
-        "memory_mb": 9154.85
+        "time_sec": 29.425,
+        "memory_mb": 9346.4
     },
     "generate_question_list": {
-        "time_sec": 41.533,
-        "memory_mb": 9113.79
+        "time_sec": 37.942,
+        "memory_mb": 9333.37
     },
     "main_execution": {
-        "time_sec": 41.534,
-        "memory_mb": 9113.75
+        "time_sec": 37.942,
+        "memory_mb": 9333.33
+    },
+    "test_evaluator": {
+        "time_sec": 8.89,
+        "memory_mb": 9151.64
+    },
+    "generate_question_money": {
+        "time_sec": 42.757,
+        "memory_mb": 9710.86
+    },
+    "generate_question_wallet": {
+        "time_sec": 42.644,
+        "memory_mb": 9710.86
+    },
+    "generate_question_invoice": {
+        "time_sec": 45.682,
+        "memory_mb": 9711.12
+    },
+    "generate_question_budget": {
+        "time_sec": 45.868,
+        "memory_mb": 9694.22
+    },
+    "generate_question_bank": {
+        "time_sec": 46.416,
+        "memory_mb": 9678.22
+    },
+    "generate_question_receipt": {
+        "time_sec": 29.396,
+        "memory_mb": 9607.2
+    },
+    "generate_question_account": {
+        "time_sec": 47.64,
+        "memory_mb": 9626.96
+    },
+    "generate_question_check": {
+        "time_sec": 47.709,
+        "memory_mb": 9626.96
+    },
+    "generate_question_card": {
+        "time_sec": 48.064,
+        "memory_mb": 9609.22
+    },
+    "generate_question_coin": {
+        "time_sec": 48.48,
+        "memory_mb": 9598.3
+    },
+    "evaluate": {
+        "time_sec": 3.806,
+        "memory_mb": 9345.34
+    },
+    "generate_question_bread": {
+        "time_sec": 30.909,
+        "memory_mb": 9201.27
+    },
+    "generate_question_vegetable": {
+        "time_sec": 31.204,
+        "memory_mb": 9595.07
+    },
+    "generate_question_fruit": {
+        "time_sec": 32.227,
+        "memory_mb": 9595.07
+    },
+    "generate_question_rice": {
+        "time_sec": 31.054,
+        "memory_mb": 9201.27
+    },
+    "generate_question_basket": {
+        "time_sec": 32.073,
+        "memory_mb": 9595.07
+    },
+    "generate_question_cart": {
+        "time_sec": 31.957,
+        "memory_mb": 9595.07
+    },
+    "generate_question_price": {
+        "time_sec": 49.598,
+        "memory_mb": 9584.12
+    },
+    "generate_question_milk": {
+        "time_sec": 29.893,
+        "memory_mb": 9607.2
+    },
+    "generate_question_egg": {
+        "time_sec": 49.857,
+        "memory_mb": 9557.21
+    },
+    "generate_question_brush": {
+        "time_sec": 28.767,
+        "memory_mb": 9247.98
+    },
+    "generate_question_apple": {
+        "time_sec": 25.734,
+        "memory_mb": 9223.75
+    },
+    "generate_question_potato": {
+        "time_sec": 27.72,
+        "memory_mb": 9223.75
+    },
+    "generate_question_cucumber": {
+        "time_sec": 30.867,
+        "memory_mb": 9223.75
+    },
+    "generate_question_tomato": {
+        "time_sec": 33.285,
+        "memory_mb": 9223.75
+    },
+    "generate_question_spinach": {
+        "time_sec": 31.581,
+        "memory_mb": 9223.75
+    },
+    "generate_question_onion": {
+        "time_sec": 33.968,
+        "memory_mb": 9222.75
+    },
+    "generate_question_carrot": {
+        "time_sec": 31.979,
+        "memory_mb": 9223.75
+    },
+    "generate_question_banana": {
+        "time_sec": 33.696,
+        "memory_mb": 9222.75
+    },
+    "generate_question_grapes": {
+        "time_sec": 32.892,
+        "memory_mb": 9223.75
+    },
+    "generate_question_mango": {
+        "time_sec": 31.851,
+        "memory_mb": 9233.04
+    },
+    "generate_question_keyboard": {
+        "time_sec": 42.318,
+        "memory_mb": 9823.43
+    },
+    "generate_question_monitor": {
+        "time_sec": 43.459,
+        "memory_mb": 9819.98
+    },
+    "generate_question_charger": {
+        "time_sec": 44.047,
+        "memory_mb": 9803.15
+    },
+    "generate_question_printer": {
+        "time_sec": 46.125,
+        "memory_mb": 9785.33
+    },
+    "generate_question_computer": {
+        "time_sec": 47.361,
+        "memory_mb": 9768.48
+    },
+    "generate_question_phone": {
+        "time_sec": 29.079,
+        "memory_mb": 9346.4
+    },
+    "generate_question_mouse": {
+        "time_sec": 48.767,
+        "memory_mb": 9740.88
+    },
+    "generate_question_router": {
+        "time_sec": 49.11,
+        "memory_mb": 9707.16
+    },
+    "generate_question_speaker": {
+        "time_sec": 49.045,
+        "memory_mb": 9707.16
+    },
+    "generate_question_tablet": {
+        "time_sec": 49.215,
+        "memory_mb": 9685.17
+    },
+    "generate_question_coupon": {
+        "time_sec": 25.355,
+        "memory_mb": 9623.35
+    },
+    "generate_question_cereal": {
+        "time_sec": 33.986,
+        "memory_mb": 9594.07
+    },
+    "generate_question_eggs": {
+        "time_sec": 40.858,
+        "memory_mb": 9593.07
+    },
+    "generate_question_table": {
+        "time_sec": 26.158,
+        "memory_mb": 9220.98
+    },
+    "generate_question_cup": {
+        "time_sec": 27.067,
+        "memory_mb": 9220.98
+    },
+    "generate_question_fork": {
+        "time_sec": 28.826,
+        "memory_mb": 9202.88
+    },
+    "generate_question_plate": {
+        "time_sec": 30.183,
+        "memory_mb": 9202.07
+    },
+    "generate_question_spoon": {
+        "time_sec": 30.694,
+        "memory_mb": 9201.27
+    },
+    "generate_question_dal": {
+        "time_sec": 35.898,
+        "memory_mb": 9200.27
+    },
+    "generate_question_chair": {
+        "time_sec": 36.257,
+        "memory_mb": 9197.29
+    },
+    "generate_question_shirt": {
+        "time_sec": 29.546,
+        "memory_mb": 9247.98
+    },
+    "generate_question_toothpaste": {
+        "time_sec": 30.911,
+        "memory_mb": 9247.98
+    },
+    "generate_question_clock": {
+        "time_sec": 31.514,
+        "memory_mb": 9247.98
+    },
+    "generate_question_pepper": {
+        "time_sec": 24.52,
+        "memory_mb": 9223.75
+    },
+    "generate_question_work boots": {
+        "time_sec": 41.222,
+        "memory_mb": 9659.28
+    },
+    "generate_question_blueprint": {
+        "time_sec": 30.446,
+        "memory_mb": 9346.4
+    },
+    "generate_question_ruler": {
+        "time_sec": 29.6,
+        "memory_mb": 9346.4
+    },
+    "generate_question_tape measure": {
+        "time_sec": 45.908,
+        "memory_mb": 9650.53
+    },
+    "generate_question_laptop": {
+        "time_sec": 29.865,
+        "memory_mb": 9346.4
+    },
+    "generate_question_notebook": {
+        "time_sec": 29.89,
+        "memory_mb": 9346.4
+    },
+    "generate_question_screwdriver": {
+        "time_sec": 24.314,
+        "memory_mb": 9343.55
+    },
+    "generate_question_helmet": {
+        "time_sec": 49.734,
+        "memory_mb": 9589.8
+    },
+    "generate_question_calculator": {
+        "time_sec": 29.828,
+        "memory_mb": 9346.4
+    },
+    "generate_question_pen": {
+        "time_sec": 28.66,
+        "memory_mb": 9346.4
+    },
+    "generate_question_broom": {
+        "time_sec": 35.648,
+        "memory_mb": 9858.18
+    },
+    "generate_question_detergent": {
+        "time_sec": 42.432,
+        "memory_mb": 10023.48
+    },
+    "generate_question_dustpan": {
+        "time_sec": 43.71,
+        "memory_mb": 10023.74
+    },
+    "generate_question_mop": {
+        "time_sec": 44.963,
+        "memory_mb": 10023.98
+    },
+    "generate_question_dishwasher": {
+        "time_sec": 46.65,
+        "memory_mb": 10023.98
+    },
+    "generate_question_laundry": {
+        "time_sec": 46.695,
+        "memory_mb": 10024.24
+    },
+    "generate_question_bucket": {
+        "time_sec": 48.263,
+        "memory_mb": 10007.38
+    },
+    "generate_question_vacuum": {
+        "time_sec": 48.893,
+        "memory_mb": 10007.38
+    },
+    "generate_question_sponge": {
+        "time_sec": 49.654,
+        "memory_mb": 9969.76
+    },
+    "generate_question_iron": {
+        "time_sec": 49.644,
+        "memory_mb": 9969.76
+    },
+    "generate_question_paper": {
+        "time_sec": 35.578,
+        "memory_mb": 9346.4
+    },
+    "generate_question_tape": {
+        "time_sec": 35.767,
+        "memory_mb": 9346.4
     }
 }
